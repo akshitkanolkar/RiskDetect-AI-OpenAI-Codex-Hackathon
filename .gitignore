@@ -1,3 +1,8 @@
+# Re-include files that may be ignored by a global gitignore
+!package.json
+!Dockerfile
+!docker-compose.yml
+
 # dependencies
 /node_modules
 /.pnp
