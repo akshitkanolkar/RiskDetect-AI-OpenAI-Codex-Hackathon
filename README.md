@@ -24,7 +24,9 @@
 
 ## What is SafeLens?
 
-SafeLens analyzes **screenshots** and **URLs** to detect private information, explain the risk in plain language, and show how to fix it — with blur, recommendations, and a downloadable report.
+Your last screenshot might be carrying secrets you never meant to share.
+
+SafeLens is a privacy guard for the stuff you send every day — **screenshots** and **URLs**. It hunts down sensitive details, tells you _why_ they matter in plain English, and helps you clean them up before they leave your device: blur the hotspots, follow the fixes, and export a report you can keep.
 
 > Upload a payment receipt → see UPI, phone, and transaction IDs highlighted → blur them → share safely.
 
