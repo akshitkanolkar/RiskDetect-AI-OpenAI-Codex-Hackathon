@@ -16,7 +16,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&amp;logo=nextdotjs&amp;logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?style=flat-square&amp;logo=openai&amp;logoColor=white" alt="OpenAI" />
-  Supabase · Tesseract.js
+  <img src="https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ECF8E?style=flat-square&amp;logo=supabase&amp;logoColor=black" alt="Supabase" />
+  <img src="https://raw.githubusercontent.com/naptha/tesseract.js/master/docs/images/tesseract.png" alt="Tesseract.js" height="20" />
 </p>
 
 ---
