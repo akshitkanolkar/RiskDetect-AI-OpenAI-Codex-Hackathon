@@ -1,10 +1,17 @@
 import { requireUser } from "@/lib/api/auth";
 import { apiError, apiSuccess, logError } from "@/lib/api/response";
+import {
+  ALLOWED_IMAGE_MIME_TYPES,
+  MAX_IMAGE_UPLOAD_BYTES,
+  MAX_IMAGE_UPLOAD_LABEL,
+} from "@/constants";
 import { scanImage } from "@/services/image-scanner";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
 
-const ALLOWED = new Set(["image/png", "image/jpeg", "image/webp", "image/jpg"]);
+const ALLOWED = new Set<string>(ALLOWED_IMAGE_MIME_TYPES);
 
 export async function POST(request: Request) {
   try {
@@ -19,8 +26,8 @@ export async function POST(request: Request) {
     if (!ALLOWED.has(file.type) && !file.name.match(/\.(png|jpe?g|webp)$/i)) {
       return apiError("Only PNG, JPEG, and WEBP are supported", 400, "VALIDATION");
     }
-    if (file.size > 8 * 1024 * 1024) {
-      return apiError("File must be under 8MB", 400, "VALIDATION");
+    if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
+      return apiError(`File must be under ${MAX_IMAGE_UPLOAD_LABEL}`, 400, "VALIDATION");
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

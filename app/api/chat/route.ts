@@ -3,6 +3,10 @@ import { apiError, apiSuccess, logError } from "@/lib/api/response";
 import { chatMessageSchema } from "@/lib/validations/scan";
 import { listChatMessages, sendCopilotMessage, getOrCreateChatSession } from "@/services/chat";
 
+export const runtime = "nodejs";
+export const maxDuration = 30;
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const user = await requireUser();

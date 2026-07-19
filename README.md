@@ -122,7 +122,22 @@ SafeLens is built with a modern full-stack TypeScript stack:
 | **QR**              | jsQR                                               |
 | **Testing**         | Vitest                                             |
 | **Tooling**         | ESLint · Prettier · Husky · pnpm                   |
-| **Deployment**      | Docker · docker-compose · Node 20                  |
+| **Deployment**      | Vercel · Docker · docker-compose · Node 20         |
+
+---
+
+## Deploy on Vercel
+
+1. Push this repo to GitHub and import it in [Vercel](https://vercel.com/new).
+2. Framework preset: **Next.js** (auto-detected). Install command: `pnpm install`.
+3. Add environment variables from `.env.example` (see table below). Set `NEXT_PUBLIC_APP_URL` to your Vercel URL.
+4. In Supabase → Authentication → URL Configuration, add `https://YOUR_APP.vercel.app` and `/auth/callback` to redirect allow-list.
+5. Deploy. Image OCR needs Node.js serverless (`maxDuration` 60s) — **Pro plan recommended** for reliable scans.
+
+```bash
+pnpm build && pnpm start   # production locally
+docker compose up --build  # Docker (sets DOCKER_BUILD=1 for standalone output)
+```
 
 ---
 
@@ -139,14 +154,17 @@ cp .env.example .env.local
 
 Fill in `.env.local`:
 
-| Variable                        | Required | Purpose                          |
-| ------------------------------- | :------: | -------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      |    ✅    | Supabase URL                     |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` |    ✅    | Supabase anon key                |
-| `SUPABASE_SERVICE_ROLE_KEY`     |    ✅    | Server-side Supabase key         |
-| `OPENAI_API_KEY`                |    ✅    | OpenAI key                       |
-| `OPENAI_MODEL`                  |    ⬜    | Default: `gpt-4o-mini`           |
-| `NEXT_PUBLIC_APP_URL`           |    ⬜    | Default: `http://localhost:3000` |
+| Variable                        | Required | Purpose                                 |
+| ------------------------------- | :------: | --------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      |    ✅    | Supabase project URL                    |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` |    ✅    | Supabase anon (public) key              |
+| `SUPABASE_SERVICE_ROLE_KEY`     |    ✅    | Server-side Supabase key (never expose) |
+| `OPENAI_API_KEY`                |    ✅    | OpenAI key for analysis + copilot       |
+| `OPENAI_MODEL`                  |    ⬜    | Default: `gpt-4o-mini`                  |
+| `NEXT_PUBLIC_APP_URL`           |   ✅*    | App URL (`*` required on Vercel)        |
+| `NEXT_PUBLIC_APP_NAME`          |    ⬜    | Display name (default: SafeLens AI)     |
+
+> OCR uses **Tesseract.js** in-process (no OCR API key). Uploads are capped at **4MB** for Vercel body limits.
 
 ```bash
 pnpm supabase:start   # local Supabase
@@ -157,8 +175,7 @@ pnpm dev              # http://localhost:3000
 Try sample images in `samples-hackathon/`.
 
 ```bash
-pnpm build && pnpm start   # production
-docker compose up --build  # Docker
+pnpm build && pnpm start   # production locally
 ```
 
 ---

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft } from "lucide-react";
 import type { ImageScanRecord, UrlScanRecord } from "@/types/scans";
 import { deriveImageReport, deriveUrlReport } from "@/lib/report/derive-intelligence";
@@ -11,7 +12,6 @@ import { ReportHero } from "@/components/scans/report/report-hero";
 import { ExecutiveSummary } from "@/components/scans/report/executive-summary";
 import { FindingsGrid } from "@/components/scans/report/finding-card";
 import { RiskDistribution } from "@/components/scans/report/risk-distribution";
-import { ImageViewer } from "@/components/scans/viewer/image-viewer";
 import { TextHeatmap } from "@/components/scans/report/text-heatmap";
 import { PrivacyScorePanel } from "@/components/scans/report/privacy-score";
 import { RecommendationsPanel } from "@/components/scans/report/recommendations-panel";
@@ -23,13 +23,33 @@ import {
   buildUrlMetadata,
 } from "@/components/scans/report/scan-metadata";
 import { RiskTimeline } from "@/components/scans/report/risk-timeline";
-import { DownloadReport } from "@/components/scans/report/download-report";
+import {
+  DownloadReport,
+  type ReportDownloadPayload,
+} from "@/components/scans/report/download-report";
 import { RelatedHistory } from "@/components/scans/report/related-history";
 import { DetectionOrderTimeline } from "@/components/scans/report/detection-order";
 import { RiskBadge } from "@/components/common/risk-badge";
 import { SEVERITY_COLORS, getFindingIcon } from "@/lib/report/finding-meta";
+import { ReportSkeleton } from "@/components/scans/report/report-skeleton";
 
-function ReportNav({ href, label }: { href: string; label: string }) {
+const ImageViewer = dynamic(
+  () =>
+    import("@/components/scans/viewer/image-viewer").then((mod) => ({ default: mod.ImageViewer })),
+  {
+    ssr: false,
+    loading: () => <ReportSkeleton />,
+  },
+);
+function ReportNav({
+  href,
+  label,
+  downloadPayload,
+}: {
+  href: string;
+  label: string;
+  downloadPayload: ReportDownloadPayload;
+}) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <Button variant="ghost" size="sm" asChild>
@@ -38,7 +58,10 @@ function ReportNav({ href, label }: { href: string; label: string }) {
           {label}
         </Link>
       </Button>
-      <p className="text-xs text-muted-foreground">SafeLens Security Intelligence Report</p>
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="text-xs text-muted-foreground">SafeLens Security Intelligence Report</p>
+        <DownloadReport payload={downloadPayload} variant="button" />
+      </div>
     </div>
   );
 }
@@ -53,10 +76,32 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function ImageScanResult({ scan }: { scan: ImageScanRecord }) {
   const report = deriveImageReport(scan);
+  const downloadPayload: ReportDownloadPayload = {
+    title: "SafeLens AI · Image Security Intelligence Report",
+    target: scan.file_name,
+    riskScore: scan.risk_score,
+    riskLevel: scan.risk_level,
+    confidence: scan.confidence,
+    summary: report.executiveSummary,
+    findings: report.findings.map((f) => ({
+      label: f.label,
+      value: f.value,
+      risk: f.risk_level,
+      recommendation: f.recommendation,
+    })),
+    recommendations: report.recommendations,
+    scenarios: report.scenarios,
+    privacy: report.privacy,
+    timestamp: scan.created_at,
+  };
 
   return (
     <FadeIn className="space-y-10">
-      <ReportNav href={ROUTES.SCAN_IMAGE} label="New image scan" />
+      <ReportNav
+        href={ROUTES.SCAN_IMAGE}
+        label="New image scan"
+        downloadPayload={downloadPayload}
+      />
 
       <ReportHero
         riskScore={scan.risk_score}
@@ -117,26 +162,7 @@ export function ImageScanResult({ scan }: { scan: ImageScanRecord }) {
 
       <RiskTimeline events={report.timeline} />
 
-      <DownloadReport
-        payload={{
-          title: "SafeLens AI · Image Security Intelligence Report",
-          target: scan.file_name,
-          riskScore: scan.risk_score,
-          riskLevel: scan.risk_level,
-          confidence: scan.confidence,
-          summary: report.executiveSummary,
-          findings: report.findings.map((f) => ({
-            label: f.label,
-            value: f.value,
-            risk: f.risk_level,
-            recommendation: f.recommendation,
-          })),
-          recommendations: report.recommendations,
-          scenarios: report.scenarios,
-          privacy: report.privacy,
-          timestamp: scan.created_at,
-        }}
-      />
+      <DownloadReport payload={downloadPayload} />
 
       <RelatedHistory currentId={scan.id} />
     </FadeIn>
@@ -145,10 +171,28 @@ export function ImageScanResult({ scan }: { scan: ImageScanRecord }) {
 
 export function UrlScanResult({ scan }: { scan: UrlScanRecord }) {
   const report = deriveUrlReport(scan);
+  const downloadPayload: ReportDownloadPayload = {
+    title: "SafeLens AI · URL Security Intelligence Report",
+    target: scan.normalized_url,
+    riskScore: scan.risk_score,
+    riskLevel: scan.risk_level,
+    confidence: scan.confidence,
+    summary: report.executiveSummary,
+    findings: report.signalCards.map((s) => ({
+      label: s.title,
+      value: scan.normalized_url,
+      risk: s.severity,
+      recommendation: s.detail,
+    })),
+    recommendations: report.recommendations,
+    scenarios: report.scenarios,
+    privacy: report.privacy,
+    timestamp: scan.created_at,
+  };
 
   return (
     <FadeIn className="space-y-10">
-      <ReportNav href={ROUTES.SCAN_URL} label="New URL scan" />
+      <ReportNav href={ROUTES.SCAN_URL} label="New URL scan" downloadPayload={downloadPayload} />
 
       <ReportHero
         riskScore={scan.risk_score}
@@ -253,26 +297,7 @@ export function UrlScanResult({ scan }: { scan: UrlScanRecord }) {
 
       <RiskTimeline events={report.timeline} />
 
-      <DownloadReport
-        payload={{
-          title: "SafeLens AI · URL Security Intelligence Report",
-          target: scan.normalized_url,
-          riskScore: scan.risk_score,
-          riskLevel: scan.risk_level,
-          confidence: scan.confidence,
-          summary: report.executiveSummary,
-          findings: report.signalCards.map((s) => ({
-            label: s.title,
-            value: scan.normalized_url,
-            risk: s.severity,
-            recommendation: s.detail,
-          })),
-          recommendations: report.recommendations,
-          scenarios: report.scenarios,
-          privacy: report.privacy,
-          timestamp: scan.created_at,
-        }}
-      />
+      <DownloadReport payload={downloadPayload} />
 
       <RelatedHistory currentId={scan.id} />
     </FadeIn>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { formatDistanceToNow } from "date-fns";
 import { Activity, ImageIcon, Link2, ScanSearch, ShieldAlert, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/layout/page-shell";
@@ -9,8 +10,6 @@ import { DashboardGrid } from "@/components/dashboard/dashboard-grid";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RiskCard } from "@/components/dashboard/risk-card";
 import { AnalyticsCard } from "@/components/dashboard/analytics-card";
-import { RiskTrendChart } from "@/components/charts/risk-trend-chart";
-import { PieChart } from "@/components/charts/pie-chart";
 import { Widget } from "@/components/dashboard/widget";
 import { RiskBadge } from "@/components/common/risk-badge";
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -22,6 +21,18 @@ import { FadeIn } from "@/components/animations/fade-in";
 import { useDashboard } from "@/hooks/use-scans";
 import { ROUTES } from "@/constants/routes";
 
+const RiskTrendChart = dynamic(
+  () =>
+    import("@/components/charts/risk-trend-chart").then((mod) => ({
+      default: mod.RiskTrendChart,
+    })),
+  { ssr: false, loading: () => <div className="h-[220px] animate-pulse rounded-md bg-muted/40" /> },
+);
+
+const PieChart = dynamic(
+  () => import("@/components/charts/pie-chart").then((mod) => ({ default: mod.PieChart })),
+  { ssr: false, loading: () => <div className="h-[220px] animate-pulse rounded-md bg-muted/40" /> },
+);
 export default function DashboardPage() {
   const { data, isLoading, error, refetch } = useDashboard();
 

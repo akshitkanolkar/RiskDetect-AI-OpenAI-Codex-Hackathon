@@ -373,6 +373,8 @@ export function ImageViewer({ scan, className }: ImageViewerProps) {
     />
   );
 
+  const hasImage = Boolean(imageSrc);
+
   return (
     <section
       ref={rootRef}
@@ -381,115 +383,131 @@ export function ImageViewer({ scan, className }: ImageViewerProps) {
         fullscreen && "fixed inset-0 z-modal rounded-none",
         className,
       )}
-      aria-label="Interactive detection preview"
+      aria-label={hasImage ? "Interactive detection preview" : "Detected findings"}
     >
       <div className="space-y-3 border-b border-border/50 p-3 sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-card-title">Interactive image inspection</h2>
+            <h2 className="text-card-title">
+              {hasImage ? "Interactive image inspection" : "Detected findings"}
+            </h2>
             <p className="text-xs text-muted-foreground">
-              Click a region or finding to synchronize focus · scroll/pinch to zoom · drag to pan
+              {hasImage
+                ? "Click a region or finding to synchronize focus · scroll/pinch to zoom · drag to pan"
+                : "Image preview unavailable — review findings below"}
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="lg:hidden"
-            onClick={() => setMobileOpen(true)}
-          >
-            <ListFilter className="h-4 w-4" />
-            Findings ({findings.filter((f) => !ignoredIds.has(f.id)).length})
-          </Button>
+          {hasImage && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="lg:hidden"
+              onClick={() => setMobileOpen(true)}
+            >
+              <ListFilter className="h-4 w-4" />
+              Findings ({findings.filter((f) => !ignoredIds.has(f.id)).length})
+            </Button>
+          )}
         </div>
-        <ViewerToolbar
-          scale={scale}
-          mode={mode}
-          showLabels={showLabels}
-          privacyBlur={privacyBlur}
-          compareMode={compareMode}
-          fullscreen={fullscreen}
-          onZoomIn={() => zoomIn()}
-          onZoomOut={() => zoomOut()}
-          onReset={() => {
-            resetPan();
-            fitToScreen();
-          }}
-          onFit={fitToScreen}
-          onActualSize={() => {
-            setZoom(1);
-            setOffset(centerOffset(container, natural, 1));
-          }}
-          onFullscreen={() => void toggleFullscreen()}
-          onModeChange={setMode}
-          onToggleLabels={() => setShowLabels((v) => !v)}
-          onToggleBlur={() => setPrivacyBlur((v) => !v)}
-          onCompareChange={setCompareMode}
-          onDownloadAnnotated={() => void downloadAnnotated()}
-          onDownloadClean={downloadClean}
-        />
+        {hasImage && (
+          <ViewerToolbar
+            scale={scale}
+            mode={mode}
+            showLabels={showLabels}
+            privacyBlur={privacyBlur}
+            compareMode={compareMode}
+            fullscreen={fullscreen}
+            onZoomIn={() => zoomIn()}
+            onZoomOut={() => zoomOut()}
+            onReset={() => {
+              resetPan();
+              fitToScreen();
+            }}
+            onFit={fitToScreen}
+            onActualSize={() => {
+              setZoom(1);
+              setOffset(centerOffset(container, natural, 1));
+            }}
+            onFullscreen={() => void toggleFullscreen()}
+            onModeChange={setMode}
+            onToggleLabels={() => setShowLabels((v) => !v)}
+            onToggleBlur={() => setPrivacyBlur((v) => !v)}
+            onCompareChange={setCompareMode}
+            onDownloadAnnotated={() => void downloadAnnotated()}
+            onDownloadClean={downloadClean}
+          />
+        )}
         <div className="flex flex-wrap items-center gap-2">
           <SeverityLegend />
-          <ImageStageTimeline className="hidden xl:flex" />
+          {hasImage && <ImageStageTimeline className="hidden xl:flex" />}
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)]">
-        <div
-          ref={stageRef}
-          className="relative min-h-[360px] bg-[radial-gradient(ellipse_at_center,hsl(var(--brand)/0.06),transparent_60%),hsl(var(--muted)/0.25)] lg:min-h-[560px]"
-        >
-          {compareMode === "side-by-side" ? (
-            <div className="flex h-full">
-              {renderStage(false, true)}
-              {renderStage(true, true)}
-            </div>
-          ) : (
-            renderStage(compareMode === "blurred" || privacyBlur)
-          )}
+      {hasImage ? (
+        <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)]">
+          <div
+            ref={stageRef}
+            className="relative min-h-[360px] bg-[radial-gradient(ellipse_at_center,hsl(var(--brand)/0.06),transparent_60%),hsl(var(--muted)/0.25)] lg:min-h-[560px]"
+          >
+            {compareMode === "side-by-side" ? (
+              <div className="flex h-full">
+                {renderStage(false, true)}
+                {renderStage(true, true)}
+              </div>
+            ) : (
+              renderStage(compareMode === "blurred" || privacyBlur)
+            )}
 
-          <MiniMap
-            imageSrc={imageSrc}
-            image={natural}
-            viewport={viewport}
-            scale={scale}
-            container={container}
-            onNavigate={(p: Point) => setOffset(p)}
-          />
+            <MiniMap
+              imageSrc={imageSrc}
+              image={natural}
+              viewport={viewport}
+              scale={scale}
+              container={container}
+              onNavigate={(p: Point) => setOffset(p)}
+            />
 
-          {hoveredFinding && (
-            <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-xs rounded-xl border border-border/70 bg-popover/95 p-3 text-sm shadow-dropdown backdrop-blur">
-              <p className="font-semibold">{hoveredFinding.label}</p>
-              <p className="mt-1 break-all font-mono text-xs text-brand">
-                {privacyBlur ? "████████" : hoveredFinding.value}
-              </p>
-              <p className="mt-1 text-xs capitalize text-muted-foreground">
-                {hoveredFinding.risk_level} risk
-                {(hoveredFinding.confidence ?? 0) > 0
-                  ? ` · ${hoveredFinding.confidence}% confidence`
-                  : ""}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">{hoveredFinding.recommendation}</p>
-            </div>
-          )}
+            {hoveredFinding && (
+              <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-xs rounded-xl border border-border/70 bg-popover/95 p-3 text-sm shadow-dropdown backdrop-blur">
+                <p className="font-semibold">{hoveredFinding.label}</p>
+                <p className="mt-1 break-all font-mono text-xs text-brand">
+                  {privacyBlur ? "████████" : hoveredFinding.value}
+                </p>
+                <p className="mt-1 text-xs capitalize text-muted-foreground">
+                  {hoveredFinding.risk_level} risk
+                  {(hoveredFinding.confidence ?? 0) > 0
+                    ? ` · ${hoveredFinding.confidence}% confidence`
+                    : ""}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {hoveredFinding.recommendation}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <aside className="hidden border-l border-border/50 bg-background/40 p-3 lg:block">
+            <p className="text-label mb-3 text-muted-foreground">Detected findings</p>
+            {findingsPanel}
+          </aside>
         </div>
+      ) : (
+        <div className="p-3 sm:p-4">{findingsPanel}</div>
+      )}
 
-        <aside className="hidden border-l border-border/50 bg-background/40 p-3 lg:block">
-          <p className="text-label mb-3 text-muted-foreground">Detected findings</p>
-          {findingsPanel}
-        </aside>
-      </div>
-
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent className="px-3 pb-6">
-          <SheetHeader>
-            <SheetTitle>Detected findings</SheetTitle>
-          </SheetHeader>
-          <div className="mt-3 max-h-[70vh] overflow-y-auto">{findingsPanel}</div>
-        </SheetContent>
-      </Sheet>
+      {hasImage && (
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetContent className="px-3 pb-6">
+            <SheetHeader>
+              <SheetTitle>Detected findings</SheetTitle>
+            </SheetHeader>
+            <div className="mt-3 max-h-[70vh] overflow-y-auto">{findingsPanel}</div>
+          </SheetContent>
+        </Sheet>
+      )}
 
       <AnimatePresence>
-        {selectedId && (
+        {selectedId && hasImage && (
           <motion.div
             className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-brand to-transparent lg:hidden"
             initial={{ opacity: 0 }}

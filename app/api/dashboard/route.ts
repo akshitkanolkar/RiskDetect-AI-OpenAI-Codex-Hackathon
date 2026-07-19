@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/api/auth";
 import { apiError, apiSuccess, logError } from "@/lib/api/response";
 import { getDashboardData } from "@/services/dashboard";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const user = await requireUser();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import type { User } from "@supabase/supabase-js";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
@@ -8,7 +9,14 @@ import { TopBar } from "@/components/navigation/top-bar";
 import { CommandMenu } from "@/components/navigation/command-menu";
 import { MobileNav } from "./mobile-nav";
 import { Button } from "@/components/ui/button";
-import { SecurityCopilot } from "@/components/copilot/security-copilot";
+
+const SecurityCopilot = dynamic(
+  () =>
+    import("@/components/copilot/security-copilot").then((mod) => ({
+      default: mod.SecurityCopilot,
+    })),
+  { ssr: false },
+);
 
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
   const [collapsed, setCollapsed] = useState(false);

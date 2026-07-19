@@ -4,6 +4,8 @@ import { urlScanSchema } from "@/lib/validations/scan";
 import { scanUrl } from "@/services/url-scanner";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {

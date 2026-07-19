@@ -3,6 +3,8 @@ import { apiError, apiSuccess, logError } from "@/lib/api/response";
 import { historyQuerySchema } from "@/lib/validations/scan";
 import { getImageScanById, getUrlScanById, listUserHistory } from "@/lib/db/scans";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const user = await requireUser();

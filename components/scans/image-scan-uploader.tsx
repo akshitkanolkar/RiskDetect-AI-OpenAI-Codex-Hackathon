@@ -6,6 +6,7 @@ import { ImageIcon, Loader2, Upload } from "lucide-react";
 import { useImageScan } from "@/hooks/use-scans";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/constants/routes";
+import { MAX_IMAGE_UPLOAD_BYTES, MAX_IMAGE_UPLOAD_LABEL } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -33,11 +34,11 @@ export function ImageScanUploader() {
         });
         return;
       }
-      if (next.size > 8 * 1024 * 1024) {
+      if (next.size > MAX_IMAGE_UPLOAD_BYTES) {
         toast({
           variant: "destructive",
           title: "File too large",
-          description: "Keep uploads under 8MB.",
+          description: `Keep uploads under ${MAX_IMAGE_UPLOAD_LABEL}.`,
         });
         return;
       }

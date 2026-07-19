@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "app/api/scan/image/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/scan/url/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/chat/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

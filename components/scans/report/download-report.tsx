@@ -107,9 +107,11 @@ function escapeHtml(value: string): string {
 export function DownloadReport({
   payload,
   className,
+  variant = "banner",
 }: {
   payload: ReportDownloadPayload;
   className?: string;
+  variant?: "banner" | "button";
 }) {
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
@@ -142,6 +144,20 @@ export function DownloadReport({
     } finally {
       setBusy(false);
     }
+  }
+
+  if (variant === "button") {
+    return (
+      <Button
+        size="sm"
+        onClick={handleDownload}
+        disabled={busy}
+        className={cn("shrink-0 gap-2", className)}
+      >
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+        Download report
+      </Button>
+    );
   }
 
   return (
