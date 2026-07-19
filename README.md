@@ -95,7 +95,7 @@ flowchart LR
 
 ## URL Intelligence & Phishing Detection
 
-SafeLens does **not** treat a link as safe just because it is well-formed. Both the **URL scanner** and the **screenshot scanner** run the same modular URL Intelligence engine (`services/url-validation/`).
+SafeLens does **not** treat a link as safe just because it is well-formed. Both the **URL scanner** and the **screenshot scanner** run the same modular URL Intelligence engine.
 
 **Pipeline:** normalize → parse domain / TLD / subdomains → decode punycode → brand similarity → typosquatting → homoglyphs → keywords / TLD / depth heuristics → risk score → AI explanation.
 
@@ -241,11 +241,11 @@ Built for real India-aware cases (UPI, Aadhaar, PAN, IFSC) and a product UX peop
 
 ## Future Enhancements
 
-- [ ] 🌐 **Browser Extension** — Scan screenshots and web pages in real time before sharing
-- [ ] 📱 **Mobile App** — Analyze gallery images and screenshots with AI-powered redaction
-- [ ] 📄 **Document Scanner** — Support PDFs, Word, Excel, and other documents for sensitive data detection
-- [ ] 🛰️ **External reputation APIs** — Optional Google Safe Browsing, VirusTotal, PhishTank providers
-- [ ] 🏢 **Enterprise Dashboard** — Team workspaces, bulk scanning, compliance reports, and role-based access control (RBAC)
+- 🌐 **Browser Extension** — Scan screenshots and web pages in real time before sharing
+- 📱 **Mobile App** — Analyze gallery images and screenshots with AI-powered redaction
+- 📄 **Document Scanner** — Support PDFs, Word, Excel, and other documents for sensitive data detection
+- 🛰️ **External reputation APIs** — Optional Google Safe Browsing, VirusTotal, PhishTank providers
+- 🏢 **Enterprise Dashboard** — Team workspaces, bulk scanning, compliance reports, and role-based access control (RBAC)
 
 ---
 
