@@ -11,7 +11,7 @@ async function fetchText(url: string) {
   try {
     const res = await fetch(url, {
       signal: controller.signal,
-      headers: { "User-Agent": "SafeLensAI/1.0" },
+      headers: { "User-Agent": "RiskDetectAI/1.0" },
       next: { revalidate: 1800 },
     });
     if (!res.ok) return "";

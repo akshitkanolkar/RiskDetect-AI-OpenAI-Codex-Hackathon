@@ -1,5 +1,5 @@
 /**
- * SafeLens AI Design Tokens — Typography
+ * RiskDetect AI Design Tokens — Typography
  * Plus Jakarta Sans scale with responsive tracking and line-height.
  */
 

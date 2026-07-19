@@ -1,5 +1,5 @@
 /**
- * SafeLens AI Design Tokens — Spacing (8px base)
+ * RiskDetect AI Design Tokens — Spacing (8px base)
  */
 
 export const spacingTokens = {

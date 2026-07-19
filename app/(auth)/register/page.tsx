@@ -4,7 +4,7 @@ import { Logo } from "@/components/shared/logo";
 
 export const metadata: Metadata = {
   title: "Create Account",
-  description: "Create your SafeLens AI account and start protecting yourself.",
+  description: "Create your RiskDetect AI account and start protecting yourself.",
 };
 
 export default function RegisterPage() {

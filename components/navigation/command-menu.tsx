@@ -32,7 +32,7 @@ export function CommandMenu() {
     <Command.Dialog
       open={open}
       onOpenChange={setOpen}
-      label="Navigate SafeLens"
+      label="Navigate RiskDetect AI"
       className="fixed inset-0 z-command flex items-start justify-center bg-background/60 p-4 pt-[15vh] backdrop-blur-sm"
     >
       <div className="w-full max-w-xl overflow-hidden rounded-xl border border-border bg-popover shadow-modal">

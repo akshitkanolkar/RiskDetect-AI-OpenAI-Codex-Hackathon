@@ -11,7 +11,7 @@ export {
 } from "./tokens";
 
 export const theme = {
-  name: "SafeLens AI",
+  name: "RiskDetect AI",
   defaultMode: "dark" as const,
   identity: {
     tagline: "See digital risks before they become disasters.",

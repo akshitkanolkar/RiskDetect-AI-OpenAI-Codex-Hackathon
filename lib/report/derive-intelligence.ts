@@ -532,7 +532,7 @@ export function deriveImageReport(scan: ImageScanRecord): DerivedImageReport {
       wordsExtracted: scan.extracted_text
         ? scan.extracted_text.trim().split(/\s+/).filter(Boolean).length
         : 0,
-      model: "SafeLens Vision · GPT risk synthesis",
+      model: "RiskDetect Vision · GPT risk synthesis",
     },
     executiveSummary: buildExecutiveSummary(
       findings,
@@ -766,7 +766,7 @@ export function deriveUrlReport(scan: UrlScanRecord): DerivedUrlReport {
       avgConfidence: scan.confidence,
       processingMs,
       wordsExtracted: 0,
-      model: "SafeLens URL Intel · GPT risk synthesis",
+      model: "RiskDetect URL Intel · GPT risk synthesis",
     },
     executiveSummary:
       scan.ai_explanation?.trim().length > 40

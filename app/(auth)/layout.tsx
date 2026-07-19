@@ -6,7 +6,7 @@ import { AuthShell } from "@/components/layout/auth-shell";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | SafeLens AI",
+    template: "%s | RiskDetect AI",
     default: "Authentication",
   },
 };

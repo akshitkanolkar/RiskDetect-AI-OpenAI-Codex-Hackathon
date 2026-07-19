@@ -1,10 +1,10 @@
-# SafeLens AI Design System
+# RiskDetect AI Design System
 
 Premium, dark-first design language for an AI digital risk intelligence platform.
 
 ## Brand identity
 
-- **Name:** SafeLens AI
+- **Name:** RiskDetect AI
 - **Tagline:** See digital risks before they become disasters.
 - **Personality:** Trustworthy, precise, intelligent, calm under pressure.
 - **Accent:** Cyan “lens” (`brand`) — not purple. Communicates scanning, clarity, and security.

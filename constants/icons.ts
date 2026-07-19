@@ -1,5 +1,5 @@
 /**
- * Icon system guidelines for SafeLens AI.
+ * Icon system guidelines for RiskDetect AI.
  * Use Lucide React exclusively. Prefer strokeWidth={1.75–2}.
  */
 

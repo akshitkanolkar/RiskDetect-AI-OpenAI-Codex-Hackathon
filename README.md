@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/icon.svg" alt="SafeLens AI" width="64" height="64" />
+  <img src="public/icon.svg" alt="RiskDetect AI" width="64" height="64" />
 </p>
 
-<h1 align="center">🛡 SafeLens AI</h1>
+<h1 align="center">🛡 RiskDetect AI</h1>
 
 <p align="center">
   <strong>AI-Powered Privacy & Digital Risk Intelligence</strong><br />
@@ -22,11 +22,11 @@
 
 ---
 
-## What is SafeLens?
+## What is RiskDetect AI?
 
 Your last screenshot might be carrying secrets you never meant to share.
 
-SafeLens is a privacy guard for the stuff you send every day — **screenshots** and **URLs**. It hunts down sensitive details, tells you _why_ they matter in plain English, and helps you clean them up before they leave your device: blur the hotspots, follow the fixes, and export a report you can keep.
+RiskDetect AI is a privacy guard for the stuff you send every day — **screenshots** and **URLs**. It hunts down sensitive details, tells you _why_ they matter in plain English, and helps you clean them up before they leave your device: blur the hotspots, follow the fixes, and export a report you can keep.
 
 > Upload a payment receipt → see UPI, phone, and transaction IDs highlighted → blur them → share safely.
 
@@ -95,7 +95,7 @@ flowchart LR
 
 ## URL Intelligence & Phishing Detection
 
-SafeLens does **not** treat a link as safe just because it is well-formed. Both the **URL scanner** and the **screenshot scanner** run the same modular URL Intelligence engine.
+RiskDetect AI does **not** treat a link as safe just because it is well-formed. Both the **URL scanner** and the **screenshot scanner** run the same modular URL Intelligence engine.
 
 **Pipeline:** normalize → parse domain / TLD / subdomains → decode punycode → brand similarity → typosquatting → homoglyphs → keywords / TLD / depth heuristics → risk score → AI explanation.
 
@@ -133,7 +133,7 @@ Each hit gets a **confidence score**, **severity**, and a short **why it matters
 
 ## Tech Stack
 
-SafeLens is built with a modern full-stack TypeScript stack:
+RiskDetect AI is built with a modern full-stack TypeScript stack:
 
 | Area                | Technology                                         |
 | ------------------- | -------------------------------------------------- |
@@ -176,8 +176,8 @@ docker compose up --build  # Docker (sets DOCKER_BUILD=1 for standalone output)
 **Needs:** Node 20+, pnpm, OpenAI API key, Supabase (local or cloud)
 
 ```bash
-git clone https://github.com/akshitkanolkar/SafeLens-AI-OpenAI-Codex-Hackathon.git
-cd SafeLens-AI-OpenAI-Codex-Hackathon
+git clone https://github.com/akshitkanolkar/RiskDetect-AI-OpenAI-Codex-Hackathon.git
+cd RiskDetect-AI-OpenAI-Codex-Hackathon
 pnpm install
 cp .env.example .env.local
 ```
@@ -192,7 +192,7 @@ Fill in `.env.local`:
 | `OPENAI_API_KEY`                |    ✅    | OpenAI key for analysis + copilot       |
 | `OPENAI_MODEL`                  |    ⬜    | Default: `gpt-4o-mini`                  |
 | `NEXT_PUBLIC_APP_URL`           |   ✅*    | App URL (`*` required on Vercel)        |
-| `NEXT_PUBLIC_APP_NAME`          |    ⬜    | Display name (default: SafeLens AI)     |
+| `NEXT_PUBLIC_APP_NAME`          |    ⬜    | Display name (default: RiskDetect AI)   |
 
 > OCR uses **Tesseract.js** in-process (no OCR API key). Uploads are capped at **4MB** for Vercel body limits.
 
@@ -225,9 +225,9 @@ samples-hackathon/        # Demo screenshots
 
 ---
 
-## Why SafeLens?
+## Why RiskDetect AI?
 
-| Other tools      | SafeLens                                        |
+| Other tools      | RiskDetect AI                                   |
 | ---------------- | ----------------------------------------------- |
 | Dump OCR text    | Validate entities + score real risk             |
 | “Valid URL = OK” | Typosquat / brand / homoglyph phishing analysis |
@@ -269,7 +269,7 @@ Built for real India-aware cases (UPI, Aadhaar, PAN, IFSC) and a product UX peop
 
 ## Closing Note
 
-SafeLens AI started from a simple idea: people share screenshots and links every day without seeing what they expose. This project turns that moment into a clear risk report — detect, validate, explain, and help you share safely.
+RiskDetect AI started from a simple idea: people share screenshots and links every day without seeing what they expose. This project turns that moment into a clear risk report — detect, validate, explain, and help you share safely.
 
 Built solo for the OpenAI Codex Hackathon, with **Cursor** and **OpenAI Codex** used throughout development and planning to move faster on architecture, implementation, and iteration.
 

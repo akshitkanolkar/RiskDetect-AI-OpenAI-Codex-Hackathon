@@ -259,7 +259,7 @@ function fallbackChat(input: {
 - [ ] Never share OTPs, passwords, or UPI PINs
 - [ ] Blur emails, IDs, and secrets in screenshots
 - [ ] Enable MFA on email and banking accounts
-- [ ] Re-scan suspicious URLs in SafeLens before visiting
+- [ ] Re-scan suspicious URLs in RiskDetect AI before visiting
 
 Based on your recent activity:
 ${input.scansContext || "No scans yet — run a URL or screenshot scan to personalize this further."}`;

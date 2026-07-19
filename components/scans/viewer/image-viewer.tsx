@@ -240,7 +240,7 @@ export function ImageViewer({ scan, className }: ImageViewerProps) {
       toast({ title: "Image unavailable", variant: "destructive" });
       return;
     }
-    downloadDataUrl(imageSrc, scan.file_name || "safelens-original.png");
+    downloadDataUrl(imageSrc, scan.file_name || "riskdetect-original.png");
   }
 
   async function downloadAnnotated() {
@@ -280,7 +280,7 @@ export function ImageViewer({ scan, className }: ImageViewerProps) {
       }
       downloadDataUrl(
         canvas.toDataURL("image/png"),
-        `safelens-annotated-${scan.file_name || "scan"}.png`,
+        `riskdetect-annotated-${scan.file_name || "scan"}.png`,
       );
     } catch {
       toast({ title: "Could not export annotated image", variant: "destructive" });

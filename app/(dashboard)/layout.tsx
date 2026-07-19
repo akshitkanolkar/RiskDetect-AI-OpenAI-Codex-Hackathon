@@ -9,7 +9,7 @@ import type { User } from "@supabase/supabase-js";
 function demoUser(): User {
   return {
     id: DEMO_USER_ID,
-    email: "demo@safelens.ai",
+    email: "demo@riskdetect.ai",
     app_metadata: {},
     user_metadata: { full_name: "Demo User" },
     aud: "authenticated",

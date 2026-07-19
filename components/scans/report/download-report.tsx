@@ -90,7 +90,7 @@ function buildReportHtml(payload: ReportDownloadPayload): string {
   <ul>${recs || "<li>None</li>"}</ul>
   <h2>Threat scenarios</h2>
   <ul>${scenarios}</ul>
-  <footer>SafeLens AI · Security Intelligence Report · Confidential</footer>
+  <footer>RiskDetect AI · Security Intelligence Report · Confidential</footer>
   <script>window.onload = () => { window.print(); };</script>
 </body>
 </html>`;
@@ -126,7 +126,7 @@ export function DownloadReport({
       if (!win) {
         const anchor = document.createElement("a");
         anchor.href = url;
-        anchor.download = `safelens-report-${format(new Date(payload.timestamp), "yyyyMMdd-HHmm")}.html`;
+        anchor.download = `riskdetect-report-${format(new Date(payload.timestamp), "yyyyMMdd-HHmm")}.html`;
         anchor.click();
         toast({
           title: "Report downloaded",

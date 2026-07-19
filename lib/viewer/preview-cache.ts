@@ -2,7 +2,7 @@
  * Client-side cache so the uploaded screenshot survives navigation to the
  * result page even when the server omits a large data URL.
  */
-const PREFIX = "safelens:scan-preview:";
+const PREFIX = "riskdetect:scan-preview:";
 
 export function cacheScanPreview(scanId: string, dataUrl: string) {
   try {

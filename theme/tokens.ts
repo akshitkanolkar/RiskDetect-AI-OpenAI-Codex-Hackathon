@@ -1,5 +1,5 @@
 /**
- * SafeLens AI Design Tokens — Radius, Elevation, Motion, Breakpoints, Z-Index
+ * RiskDetect AI Design Tokens — Radius, Elevation, Motion, Breakpoints, Z-Index
  */
 
 export const radiusTokens = {

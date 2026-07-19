@@ -4,7 +4,7 @@ import { Logo } from "@/components/shared/logo";
 
 export const metadata: Metadata = {
   title: "Sign In",
-  description: "Sign in to your SafeLens AI account.",
+  description: "Sign in to your RiskDetect AI account.",
 };
 
 export default function LoginPage() {

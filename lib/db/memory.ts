@@ -15,11 +15,11 @@ type StoreShape = {
   riskHistory: RiskHistoryRecord[];
 };
 
-const globalStore = globalThis as unknown as { __safelensStore?: StoreShape };
+const globalStore = globalThis as unknown as { __riskdetectStore?: StoreShape };
 
 function store(): StoreShape {
-  if (!globalStore.__safelensStore) {
-    globalStore.__safelensStore = {
+  if (!globalStore.__riskdetectStore) {
+    globalStore.__riskdetectStore = {
       urlScans: [],
       imageScans: [],
       chatSessions: [],
@@ -27,7 +27,7 @@ function store(): StoreShape {
       riskHistory: [],
     };
   }
-  return globalStore.__safelensStore;
+  return globalStore.__riskdetectStore;
 }
 
 export function createId() {

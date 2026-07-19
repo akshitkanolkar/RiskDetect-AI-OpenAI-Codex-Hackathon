@@ -1,6 +1,6 @@
 {
-  "name": "SafeLens AI",
-  "short_name": "SafeLens",
+  "name": "RiskDetect AI",
+  "short_name": "RiskDetect",
   "description": "See digital risks before they become disasters.",
   "start_url": "/",
   "display": "standalone",

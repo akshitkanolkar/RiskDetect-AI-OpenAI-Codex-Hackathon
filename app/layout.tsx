@@ -18,13 +18,13 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://safelens.ai"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://riskdetect.ai"),
   title: {
-    default: "SafeLens AI — See digital risks before they become disasters",
-    template: "%s | SafeLens AI",
+    default: "RiskDetect AI — See digital risks before they become disasters",
+    template: "%s | RiskDetect AI",
   },
   description:
-    "SafeLens AI helps you identify privacy leaks, phishing attempts, scams, exposed credentials, malicious URLs, and digital footprint risks using AI and public threat intelligence.",
+    "RiskDetect AI helps you identify privacy leaks, phishing attempts, scams, exposed credentials, malicious URLs, and digital footprint risks using AI and public threat intelligence.",
   keywords: [
     "privacy",
     "security",
@@ -34,16 +34,16 @@ export const metadata: Metadata = {
     "digital footprint",
     "AI security",
     "threat intelligence",
-    "SafeLens",
+    "RiskDetect",
   ],
-  authors: [{ name: "SafeLens AI" }],
-  creator: "SafeLens AI",
+  authors: [{ name: "RiskDetect AI" }],
+  creator: "RiskDetect AI",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://safelens.ai",
-    siteName: "SafeLens AI",
-    title: "SafeLens AI — See digital risks before they become disasters",
+    url: "https://riskdetect.ai",
+    siteName: "RiskDetect AI",
+    title: "RiskDetect AI — See digital risks before they become disasters",
     description:
       "Identify privacy leaks, phishing attempts, exposed credentials, and digital footprint risks with AI-powered threat intelligence.",
     images: [
@@ -51,17 +51,17 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "SafeLens AI",
+        alt: "RiskDetect AI",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SafeLens AI — See digital risks before they become disasters",
+    title: "RiskDetect AI — See digital risks before they become disasters",
     description:
       "Identify privacy leaks, phishing attempts, exposed credentials, and digital footprint risks with AI-powered threat intelligence.",
     images: ["/og-image.png"],
-    creator: "@safelensai",
+    creator: "@riskdetectai",
   },
   robots: {
     index: true,

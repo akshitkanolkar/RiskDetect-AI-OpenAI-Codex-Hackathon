@@ -1,4 +1,4 @@
--- SafeLens AI MVP Schema
+-- RiskDetect AI MVP Schema
 -- Run in Supabase SQL Editor or via CLI
 
 create extension if not exists "pgcrypto";

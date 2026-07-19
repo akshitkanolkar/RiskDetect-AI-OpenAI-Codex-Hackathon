@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   let displayName = "Demo User";
-  let email: string | undefined = "demo@safelens.ai";
+  let email: string | undefined = "demo@riskdetect.ai";
   let avatarUrl: string | undefined;
   let userId = DEMO_USER_ID;
 
@@ -44,7 +44,7 @@ export default async function ProfilePage() {
       <Card className="mt-8 border-border/60 bg-card/60">
         <CardHeader>
           <CardTitle className="text-card-title">Account</CardTitle>
-          <CardDescription>Information associated with your SafeLens AI account.</CardDescription>
+          <CardDescription>Information associated with your RiskDetect AI account.</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center gap-4">
           <Avatar className="h-16 w-16">

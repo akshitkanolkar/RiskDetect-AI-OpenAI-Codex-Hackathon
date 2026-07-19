@@ -59,7 +59,7 @@ function ReportNav({
         </Link>
       </Button>
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-xs text-muted-foreground">SafeLens Security Intelligence Report</p>
+        <p className="text-xs text-muted-foreground">RiskDetect AI Security Intelligence Report</p>
         <DownloadReport payload={downloadPayload} variant="button" />
       </div>
     </div>
@@ -77,7 +77,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export function ImageScanResult({ scan }: { scan: ImageScanRecord }) {
   const report = deriveImageReport(scan);
   const downloadPayload: ReportDownloadPayload = {
-    title: "SafeLens AI · Image Security Intelligence Report",
+    title: "RiskDetect AI · Image Security Intelligence Report",
     target: scan.file_name,
     riskScore: scan.risk_score,
     riskLevel: scan.risk_level,
@@ -172,7 +172,7 @@ export function ImageScanResult({ scan }: { scan: ImageScanRecord }) {
 export function UrlScanResult({ scan }: { scan: UrlScanRecord }) {
   const report = deriveUrlReport(scan);
   const downloadPayload: ReportDownloadPayload = {
-    title: "SafeLens AI · URL Security Intelligence Report",
+    title: "RiskDetect AI · URL Security Intelligence Report",
     target: scan.normalized_url,
     riskScore: scan.risk_score,
     riskLevel: scan.risk_level,

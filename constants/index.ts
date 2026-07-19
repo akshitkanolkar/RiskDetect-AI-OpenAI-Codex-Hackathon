@@ -1,7 +1,7 @@
-export const APP_NAME = "SafeLens AI";
+export const APP_NAME = "RiskDetect AI";
 export const APP_TAGLINE = "See digital risks before they become disasters.";
 export const APP_DESCRIPTION =
-  "SafeLens AI helps you identify privacy leaks, phishing attempts, scams, exposed credentials, malicious URLs, unsafe screenshots, and digital footprint risks using AI and public threat intelligence.";
+  "RiskDetect AI helps you identify privacy leaks, phishing attempts, scams, exposed credentials, malicious URLs, unsafe screenshots, and digital footprint risks using AI and public threat intelligence.";
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 /** Vercel serverless request body limit is ~4.5MB — keep under that. */

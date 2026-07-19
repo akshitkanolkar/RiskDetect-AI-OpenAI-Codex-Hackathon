@@ -7,7 +7,7 @@ export async function requireUser() {
   if (!isSupabaseConfigured()) {
     return {
       id: DEMO_USER_ID,
-      email: "demo@safelens.ai",
+      email: "demo@riskdetect.ai",
       user_metadata: { full_name: "Demo User" },
     };
   }

@@ -16,9 +16,9 @@ export function apiError(message: string, status = 400, code?: string) {
 
 export function logInfo(scope: string, message: string, meta?: Record<string, unknown>) {
   // eslint-disable-next-line no-console
-  console.info(`[SafeLens:${scope}]`, message, meta ?? "");
+  console.info(`[RiskDetect:${scope}]`, message, meta ?? "");
 }
 
 export function logError(scope: string, message: string, meta?: Record<string, unknown>) {
-  console.error(`[SafeLens:${scope}]`, message, meta ?? "");
+  console.error(`[RiskDetect:${scope}]`, message, meta ?? "");
 }

@@ -19,7 +19,7 @@ fi
 cat > .env.local <<EOF
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_NAME=SafeLens AI
+NEXT_PUBLIC_APP_NAME=RiskDetect AI
 
 # Local Supabase
 NEXT_PUBLIC_SUPABASE_URL=${API_URL}

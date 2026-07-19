@@ -1,6 +1,6 @@
 # Component documentation
 
-Quick reference for SafeLens AI reusable UI. Import paths use the `@/` alias.
+Quick reference for RiskDetect AI reusable UI. Import paths use the `@/` alias.
 
 ## Buttons
 

@@ -1,5 +1,5 @@
 /**
- * SafeLens AI Design Tokens — Color
+ * RiskDetect AI Design Tokens — Color
  * Dark-first cyan/slate identity: trust, security, intelligence.
  */
 
