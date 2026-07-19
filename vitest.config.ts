@@ -7,6 +7,8 @@ export default defineConfig({
     include: [
       "services/detection/**/*.test.ts",
       "services/detection/**/__tests__/**/*.ts",
+      "services/url-validation/**/*.test.ts",
+      "services/url-validation/**/__tests__/**/*.ts",
       "lib/report/**/*.test.ts",
       "lib/report/**/__tests__/**/*.ts",
       "lib/viewer/**/*.test.ts",

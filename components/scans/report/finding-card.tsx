@@ -75,9 +75,15 @@ export function FindingCard({ finding, index }: { finding: ImageFinding; index: 
             {finding.validation_method}
           </Badge>
         )}
-        {finding.risk_category && (
-          <Badge variant="outline" className="text-[11px]">
-            {finding.risk_category}
+        {finding.risk_category &&
+          finding.risk_category.split(" / ").map((threat) => (
+            <Badge key={threat} variant="outline" className="text-[11px]">
+              {threat.trim()}
+            </Badge>
+          ))}
+        {finding.category === "url" && finding.context && (
+          <Badge variant="secondary" className="font-mono text-[11px]">
+            root · {finding.context}
           </Badge>
         )}
       </div>

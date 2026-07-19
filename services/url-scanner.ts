@@ -1,18 +1,11 @@
 import { aiService } from "@/services/ai";
 import { checkOpenPhish, checkUrlhaus } from "@/services/threat-intel";
 import { createId, nowIso, saveRiskHistory, saveUrlScan } from "@/lib/db/scans";
-import {
-  estimateDomainAgeDays,
-  extractSuspiciousKeywords,
-  hasIpHostname,
-  looksLikeHomoglyph,
-  normalizeUrl,
-} from "@/utils/url";
+import { analyzeUrlIntelligence } from "@/services/url-validation";
 import type { TimelineEvent, UrlScanRecord } from "@/types/scans";
 import { scoreToRiskLevel } from "@/utils/risk";
 
 export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRecord> {
-  const { normalized, protocol, domain, hostname } = normalizeUrl(rawUrl);
   const timeline: TimelineEvent[] = [];
   const push = (label: string, detail: string, status: TimelineEvent["status"]) => {
     timeline.push({
@@ -26,15 +19,25 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
 
   push("Validated URL", "Syntax and hostname structure look parseable.", "success");
 
-  const suspiciousKeywords = extractSuspiciousKeywords(normalized);
-  const ipHost = hasIpHostname(hostname);
-  const homoglyph = looksLikeHomoglyph(hostname);
-  const domainAgeDays = estimateDomainAgeDays(domain);
+  // Preliminary parse for threat-intel lookups (feeds need domain / normalized URL)
+  const preliminary = analyzeUrlIntelligence(rawUrl);
+  const normalized = preliminary.normalizedUrl;
+  const protocol = preliminary.protocol;
+  const domain = preliminary.domain;
 
   push("Normalized target", `${protocol.toUpperCase()} · ${domain}`, "info");
+  push(
+    "URL intelligence",
+    `Parsed root=${preliminary.rootDomain}, TLD=.${preliminary.tld || "n/a"}, subdomains=${preliminary.subdomains.length}`,
+    "info",
+  );
 
-  if (suspiciousKeywords.length) {
-    push("Suspicious keywords", `Matched: ${suspiciousKeywords.slice(0, 5).join(", ")}`, "warning");
+  if (preliminary.signals.suspiciousKeywords.length) {
+    push(
+      "Suspicious keywords",
+      `Matched: ${preliminary.signals.suspiciousKeywords.slice(0, 5).join(", ")}`,
+      "warning",
+    );
   }
 
   const [listedInUrlhaus, listedInOpenPhish] = await Promise.all([
@@ -54,47 +57,31 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
     push("Threat intel check", "No current feed matches for this host.", "success");
   }
 
-  if (domainAgeDays !== null && domainAgeDays < 90) {
-    push("Domain age signal", `Estimated age ~${domainAgeDays} days (young).`, "warning");
+  // Re-run with feed results so risk score includes blocklist hits
+  const intel = analyzeUrlIntelligence(rawUrl, { listedInUrlhaus, listedInOpenPhish });
+
+  if (intel.signals.isTyposquat || intel.signals.isBrandImpersonation) {
+    push(
+      "Brand / typosquat",
+      intel.brandName
+        ? `Possible ${intel.brandName} impersonation (official: ${intel.officialDomain})`
+        : "Lookalike domain heuristics matched",
+      "danger",
+    );
+  }
+  if (intel.signals.hasHomoglyph) {
+    push("Homoglyph analysis", "Visually deceptive characters detected in hostname.", "warning");
+  }
+  if (intel.signals.domainAgeDays !== null && intel.signals.domainAgeDays < 90) {
+    push(
+      "Domain age signal",
+      `Estimated age ~${intel.signals.domainAgeDays} days (young).`,
+      "warning",
+    );
   }
 
-  const reasons: string[] = [];
-  let heuristicScore = 8;
-
-  if (protocol !== "https") {
-    heuristicScore += 18;
-    reasons.push("Non-HTTPS protocol increases interception risk");
-  }
-  if (suspiciousKeywords.length) {
-    heuristicScore += Math.min(30, suspiciousKeywords.length * 8);
-    reasons.push(`Suspicious keywords in URL: ${suspiciousKeywords.join(", ")}`);
-  }
-  if (ipHost) {
-    heuristicScore += 25;
-    reasons.push("Hostname is an IP address rather than a domain");
-  }
-  if (homoglyph) {
-    heuristicScore += 35;
-    reasons.push("Possible brand impersonation / homoglyph pattern");
-  }
-  if (domainAgeDays !== null && domainAgeDays < 60) {
-    heuristicScore += 20;
-    reasons.push("Domain appears newly registered");
-  }
-  if (listedInUrlhaus) {
-    heuristicScore += 45;
-    reasons.push("Domain listed in URLHaus malicious host feed");
-  }
-  if (listedInOpenPhish) {
-    heuristicScore += 45;
-    reasons.push("URL matched OpenPhish phishing feed");
-  }
-  if (domain.split(".").length > 4) {
-    heuristicScore += 12;
-    reasons.push("Unusually deep subdomain nesting");
-  }
-
-  heuristicScore = Math.min(100, heuristicScore);
+  const reasons = intel.reasons;
+  const heuristicScore = intel.riskScore;
 
   const analysis = await aiService.analyzeUrl({
     url: normalized,
@@ -104,22 +91,63 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
     reasons,
     listed: listedInUrlhaus || listedInOpenPhish,
     signals: {
-      suspiciousKeywords,
+      suspiciousKeywords: intel.signals.suspiciousKeywords,
       protocol,
       domain,
-      hasIpHost: ipHost,
-      hasHomoglyph: homoglyph,
+      hasIpHost: intel.signals.hasIpHost,
+      hasHomoglyph: intel.signals.hasHomoglyph,
+      isTyposquat: intel.signals.isTyposquat,
+      isBrandImpersonation: intel.signals.isBrandImpersonation,
+      isShortened: intel.signals.isShortened,
+      matchedBrand: intel.signals.matchedBrand,
+      officialDomain: intel.signals.officialDomain,
       listedInUrlhaus,
       listedInOpenPhish,
-      domainAgeDays,
+      domainAgeDays: intel.signals.domainAgeDays,
       heuristicScore,
+      contributions: intel.signals.contributions,
     },
   });
 
   push("AI risk synthesis", analysis.ai_explanation.slice(0, 120) + "…", "info");
 
-  const risk_score = analysis.risk_score;
-  const risk_level = analysis.risk_level ?? scoreToRiskLevel(risk_score);
+  // Prefer the higher of heuristic vs AI when lookalike signals are strong
+  let risk_score = analysis.risk_score;
+  if (
+    (intel.signals.isTyposquat || intel.signals.isBrandImpersonation) &&
+    heuristicScore > risk_score
+  ) {
+    risk_score = heuristicScore;
+  }
+  const risk_level = scoreToRiskLevel(risk_score);
+  const confidence = Math.max(analysis.confidence, intel.confidence);
+  const threat_category =
+    intel.threatCategories.filter((c) => c !== "Clean").join(" / ") ||
+    analysis.threat_category ||
+    "unknown";
+
+  // Ensure recommendation mentions official domain when relevant
+  let recommendations = analysis.recommendations;
+  if (
+    intel.officialDomain &&
+    intel.brandName &&
+    (intel.signals.isTyposquat || intel.signals.isBrandImpersonation)
+  ) {
+    const hasOfficial = recommendations.some((r) =>
+      r.description.toLowerCase().includes(intel.officialDomain!.toLowerCase()),
+    );
+    if (!hasOfficial) {
+      recommendations = [
+        {
+          id: "official-domain",
+          title: `Use official ${intel.brandName} site`,
+          description: intel.recommendedAction,
+          priority: "immediate" as const,
+        },
+        ...recommendations,
+      ];
+    }
+  }
 
   const record: UrlScanRecord = {
     id: createId(),
@@ -129,29 +157,45 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
     domain,
     protocol,
     status: "completed",
-    risk_level,
+    risk_level: analysis.risk_level ?? risk_level,
     risk_score,
-    confidence: analysis.confidence,
-    threat_category: analysis.threat_category ?? "unknown",
+    confidence,
+    threat_category,
     reasons: reasons.length ? reasons : ["No elevated heuristic signals detected"],
-    recommendations: analysis.recommendations,
+    recommendations,
     ai_explanation: analysis.ai_explanation,
     timeline,
     signals: {
-      suspiciousKeywords,
+      suspiciousKeywords: intel.signals.suspiciousKeywords,
       protocol,
       domain,
-      hasIpHost: ipHost,
-      hasHomoglyph: homoglyph,
+      hasIpHost: intel.signals.hasIpHost,
+      hasHomoglyph: intel.signals.hasHomoglyph,
+      isTyposquat: intel.signals.isTyposquat,
+      isBrandImpersonation: intel.signals.isBrandImpersonation,
+      hasDeepSubdomains: intel.signals.hasDeepSubdomains,
+      hasSuspiciousTld: intel.signals.hasSuspiciousTld,
+      isLongUrl: intel.signals.isLongUrl,
+      isShortened: intel.signals.isShortened,
+      matchedBrand: intel.signals.matchedBrand,
+      officialDomain: intel.signals.officialDomain,
       listedInUrlhaus,
       listedInOpenPhish,
-      domainAgeDays,
+      domainAgeDays: intel.signals.domainAgeDays,
       heuristicScore,
+      rootDomain: intel.rootDomain,
+      tld: intel.tld,
+      unicodeHostname: intel.unicodeHostname,
+      recommendedAction: intel.recommendedAction,
+      threatCategories: intel.threatCategories,
     },
     created_at: nowIso(),
     updated_at: nowIso(),
     deleted_at: null,
   };
+
+  // Fix risk_level to match possibly elevated score
+  record.risk_level = scoreToRiskLevel(record.risk_score);
 
   const saved = await saveUrlScan(record);
   await saveRiskHistory({

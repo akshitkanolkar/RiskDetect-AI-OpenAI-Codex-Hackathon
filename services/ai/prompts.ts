@@ -16,6 +16,10 @@ export function buildUrlAnalysisPrompt(payload: {
 risk_score (0-100), risk_level (safe|low|medium|high|critical), confidence (0-100),
 threat_category (string), ai_explanation (2-4 sentences), recommendations (array of {title, description, priority}).
 
+Weight typosquatting, brand impersonation, and homoglyph signals heavily when present.
+If an officialDomain / matchedBrand is provided for a lookalike, recommend using that official site.
+Explain visually deceptive characters when relevant (e.g. "rn" for "m", digit substitutions).
+
 URL: ${payload.url}
 Domain: ${payload.domain}
 Protocol: ${payload.protocol}
@@ -33,6 +37,10 @@ export function buildImageAnalysisPrompt(payload: {
   return `Analyze screenshot privacy exposure and return JSON with keys:
 risk_score (0-100), risk_level (safe|low|medium|high|critical), confidence (0-100),
 ai_explanation (2-4 sentences), recommendations (array of {title, description, priority}).
+
+IMPORTANT: A URL finding marked high/critical for typosquatting or brand impersonation must NOT be summarized as safe.
+A syntactically valid URL is not trustworthy by default — weight phishing URL findings heavily.
+If heuristic score is high due to phishing URLs, risk_score must remain high/critical.
 
 File: ${payload.fileName}
 Heuristic score: ${payload.heuristicScore}

@@ -1,44 +1,22 @@
-const SUSPICIOUS_KEYWORDS = [
-  "login",
-  "signin",
-  "secure",
-  "account",
-  "verify",
-  "update",
-  "banking",
-  "paypal",
-  "amazon",
-  "microsoft",
-  "apple",
-  "wallet",
-  "crypto",
-  "airdrop",
-  "free",
-  "gift",
-  "urgent",
-  "suspended",
-  "confirm",
-  "password",
-  "support",
-] as const;
+import {
+  analyzeUrlIntelligence,
+  estimateDomainAgeDays as estimateAge,
+  SUSPICIOUS_KEYWORDS,
+} from "@/services/url-validation";
 
+/** @deprecated Prefer analyzeUrlIntelligence — kept for callers outside the scanner. */
 export function normalizeUrl(input: string): {
   normalized: string;
   protocol: string;
   domain: string;
   hostname: string;
 } {
-  const withProtocol = /^https?:\/\//i.test(input.trim())
-    ? input.trim()
-    : `https://${input.trim()}`;
-  const parsed = new URL(withProtocol);
-  parsed.hash = "";
-  const hostname = parsed.hostname.toLowerCase();
+  const intel = analyzeUrlIntelligence(input);
   return {
-    normalized: parsed.toString(),
-    protocol: parsed.protocol.replace(":", ""),
-    domain: hostname.replace(/^www\./, ""),
-    hostname,
+    normalized: intel.normalizedUrl,
+    protocol: intel.protocol,
+    domain: intel.domain,
+    hostname: intel.hostname,
   };
 }
 
@@ -51,23 +29,21 @@ export function hasIpHostname(hostname: string): boolean {
   return /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) || hostname.includes(":");
 }
 
+/**
+ * Back-compat wrapper — delegates to the URL intelligence homoglyph / typosquat engine.
+ */
 export function looksLikeHomoglyph(hostname: string): boolean {
-  return (
-    /[0o]/.test(hostname) &&
-    /(amaz[0o]n|g[0o]{2}gle|micr[0o]s[0o]ft|paypa[l1]|faceb[0o]{2}k)/i.test(hostname)
-  );
+  try {
+    const intel = analyzeUrlIntelligence(`https://${hostname}`);
+    return intel.signals.hasHomoglyph || intel.signals.isTyposquat;
+  } catch {
+    return (
+      /[0o]/.test(hostname) &&
+      /(amaz[0o]n|g[0o]{2}gle|micr[0o]s[0o]ft|paypa[l1]|faceb[0o]{2}k)/i.test(hostname)
+    );
+  }
 }
 
 export function estimateDomainAgeDays(domain: string): number | null {
-  // Heuristic stand-in when WHOIS is unavailable: shorter/newer-looking TLDs and digits score younger.
-  if (/\d{2,}/.test(domain) || domain.split(".").some((p) => p.length <= 3 && /\d/.test(p))) {
-    return 14;
-  }
-  if (domain.endsWith(".xyz") || domain.endsWith(".top") || domain.endsWith(".icu")) {
-    return 45;
-  }
-  if (domain.endsWith(".com") || domain.endsWith(".org") || domain.endsWith(".net")) {
-    return 1200;
-  }
-  return 180;
+  return estimateAge(domain);
 }

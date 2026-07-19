@@ -14,6 +14,7 @@ import { classifySeverity, riskCategoryFor } from "./severity";
 import { explainFinding, labelFor } from "./explanations";
 import { recommendFor } from "./recommendations";
 import { dedupeFindings } from "./dedupe";
+import { enrichOcrUrlFindings } from "@/services/url-validation";
 import {
   validateEmail,
   validateUpi,
@@ -64,6 +65,9 @@ function validateCandidate(c: RawCandidate, fullText: string): Accepted | null {
     case "upi": {
       // If it's a valid email, never accept as UPI
       if (validateEmail(c.value).valid) return null;
+      // UPI extractor can truncate before ".com" — reject when a TLD suffix makes a valid email
+      const tldSuffix = fullText.slice(c.end).match(/^(\.[a-zA-Z]{2,24}(?:\.[a-zA-Z]{2,24})?)/);
+      if (tldSuffix && validateEmail(c.value + tldSuffix[1]).valid) return null;
       const r = validateUpi(c.value);
       if (!r.valid) return null;
       return {
@@ -374,7 +378,7 @@ export function runDetectionPipeline(ocrText: string): DetectionPipelineResult {
 
   const scored = accepted.map((a) => toScored(a, normalized.text));
   const deduped = dedupeFindings(scored);
-  const findings = deduped.map(toImageFinding);
+  const findings = enrichOcrUrlFindings(deduped.map(toImageFinding));
 
   return {
     findings,

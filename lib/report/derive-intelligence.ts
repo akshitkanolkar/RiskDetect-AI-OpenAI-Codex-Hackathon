@@ -563,6 +563,49 @@ export function deriveUrlReport(scan: UrlScanRecord): DerivedUrlReport {
       severity: "critical",
     });
   }
+  if (scan.signals.isTyposquat) {
+    signalCards.push({
+      id: "typo",
+      title: "Typosquatting",
+      detail: scan.signals.matchedBrand
+        ? `Lookalike domain imitating ${scan.signals.matchedBrand}${scan.signals.officialDomain ? ` (official: ${scan.signals.officialDomain})` : ""}.`
+        : "Registrable label is a close edit-distance match to a trusted brand.",
+      severity: "critical",
+    });
+  } else if (scan.signals.isBrandImpersonation) {
+    signalCards.push({
+      id: "brand",
+      title: "Brand impersonation",
+      detail: scan.signals.officialDomain
+        ? `Appears to impersonate ${scan.signals.matchedBrand}. Prefer ${scan.signals.officialDomain}.`
+        : "Domain closely resembles a trusted brand but is not official.",
+      severity: "critical",
+    });
+  }
+  if (scan.signals.isShortened) {
+    signalCards.push({
+      id: "short",
+      title: "Shortened URL",
+      detail: "Destination cannot be verified without expanding the short link.",
+      severity: "medium",
+    });
+  }
+  if (scan.signals.hasDeepSubdomains) {
+    signalCards.push({
+      id: "subs",
+      title: "Excessive subdomains",
+      detail: "Unusually deep subdomain nesting is common in phishing kits.",
+      severity: "medium",
+    });
+  }
+  if (scan.signals.hasSuspiciousTld) {
+    signalCards.push({
+      id: "tld",
+      title: "Suspicious TLD + impersonation",
+      detail: `Uncommon TLD${scan.signals.tld ? ` (.${scan.signals.tld})` : ""} combined with brand lookalike signals.`,
+      severity: "high",
+    });
+  }
   if (scan.signals.hasIpHost) {
     signalCards.push({
       id: "ip",
@@ -703,7 +746,10 @@ export function deriveUrlReport(scan: UrlScanRecord): DerivedUrlReport {
 
   return {
     privacy: {
-      identity: scan.signals.hasHomoglyph ? 70 : 20,
+      identity:
+        scan.signals.hasHomoglyph || scan.signals.isTyposquat || scan.signals.isBrandImpersonation
+          ? 70
+          : 20,
       financial: scan.threat_category.toLowerCase().includes("phish") ? 65 : 25,
       credentials: Math.min(100, Math.round(scan.risk_score * 0.85)),
       communication: 40,

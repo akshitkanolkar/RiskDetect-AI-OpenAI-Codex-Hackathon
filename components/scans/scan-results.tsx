@@ -209,6 +209,28 @@ export function UrlScanResult({ scan }: { scan: UrlScanRecord }) {
 
       <ExecutiveSummary summary={report.executiveSummary} />
 
+      {(scan.signals.recommendedAction || scan.signals.officialDomain) && (
+        <section className="rounded-2xl border border-border/60 bg-gradient-to-br from-surface-elevated to-surface p-5">
+          <SectionLabel>Recommended action</SectionLabel>
+          <p className="mt-2 text-sm leading-relaxed text-foreground">
+            {scan.signals.recommendedAction ??
+              "Verify the domain carefully before entering credentials."}
+          </p>
+          {scan.signals.officialDomain && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Official domain
+              {scan.signals.matchedBrand ? ` for ${scan.signals.matchedBrand}` : ""}:{" "}
+              <span className="font-mono text-foreground">{scan.signals.officialDomain}</span>
+            </p>
+          )}
+          {scan.threat_category && scan.threat_category !== "unknown" && (
+            <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">
+              Threat category · {scan.threat_category}
+            </p>
+          )}
+        </section>
+      )}
+
       <section>
         <SectionLabel>Detected signals</SectionLabel>
         {report.signalCards.length === 0 ? (
@@ -269,8 +291,10 @@ export function UrlScanResult({ scan }: { scan: UrlScanRecord }) {
             count:
               (scan.signals.listedInUrlhaus ? 1 : 0) + (scan.signals.listedInOpenPhish ? 1 : 0),
           },
+          { name: "Typosquat", count: scan.signals.isTyposquat ? 1 : 0 },
           { name: "Homoglyph", count: scan.signals.hasHomoglyph ? 1 : 0 },
           { name: "IP host", count: scan.signals.hasIpHost ? 1 : 0 },
+          { name: "Shortener", count: scan.signals.isShortened ? 1 : 0 },
         ].filter((e) => e.count > 0)}
       />
 

@@ -21,6 +21,21 @@ export interface UrlScanSignals {
   domain: string;
   hasIpHost: boolean;
   hasHomoglyph: boolean;
+  /** Lookalike / typosquat domain detected against a trusted brand. */
+  isTyposquat?: boolean;
+  /** Domain impersonates a trusted brand but is not official. */
+  isBrandImpersonation?: boolean;
+  hasDeepSubdomains?: boolean;
+  hasSuspiciousTld?: boolean;
+  isLongUrl?: boolean;
+  isShortened?: boolean;
+  matchedBrand?: string | null;
+  officialDomain?: string | null;
+  rootDomain?: string;
+  tld?: string;
+  unicodeHostname?: string;
+  recommendedAction?: string;
+  threatCategories?: string[];
   listedInUrlhaus: boolean;
   listedInOpenPhish: boolean;
   domainAgeDays: number | null;

@@ -5,8 +5,12 @@ import { createId, nowIso, saveImageScan, saveRiskHistory } from "@/lib/db/scans
 import { runDetectionPipeline, scoreImageFindings } from "@/services/detection";
 import { attachBoundingBoxes, type OcrWord } from "@/lib/viewer/map-ocr-boxes";
 import { readImageDimensions } from "@/lib/viewer/image-dimensions";
+import {
+  analyzeScreenshotUrls,
+  applyUrlRiskFloor,
+  mergeUrlFindings,
+} from "@/services/url-validation";
 import type { ImageFinding, ImageScanRecord } from "@/types/scans";
-import { scoreToRiskLevel } from "@/utils/risk";
 import { logError } from "@/lib/api/response";
 
 interface OcrResult {
@@ -72,11 +76,18 @@ export async function scanImage(input: {
 }): Promise<ImageScanRecord> {
   const ocr = await runOcr(input.buffer);
   const dims = readImageDimensions(input.buffer, input.mimeType);
-  const pipeline = runDetectionPipeline(ocr.text);
-  const pixelQr = await detectQrCodes(input.buffer, input.mimeType);
-  const findings = attachBoundingBoxes([...pipeline.findings, ...pixelQr], ocr.words);
 
-  const heuristicScore = scoreImageFindings(findings);
+  // Dedicated screenshot URL intelligence (OCR heal → extract → typosquat/brand analysis)
+  const urlAnalysis = await analyzeScreenshotUrls(ocr.text);
+
+  // Run general PII/secrets pipeline on healed text so URL tokens survive OCR glitches
+  const pipeline = runDetectionPipeline(urlAnalysis.healedText || ocr.text);
+  const pixelQr = await detectQrCodes(input.buffer, input.mimeType);
+
+  const merged = mergeUrlFindings(pipeline.findings, urlAnalysis.urlFindings);
+  const findings = attachBoundingBoxes([...merged, ...pixelQr], ocr.words);
+
+  const heuristicScore = Math.max(scoreImageFindings(findings), urlAnalysis.riskFloor);
   const analysis = await aiService.analyzeImage({
     fileName: input.fileName,
     findings: findings.map((f) => ({
@@ -85,14 +96,43 @@ export async function scanImage(input: {
       value: f.value,
       risk_level: f.risk_level,
     })),
-    extractedTextPreview: ocr.text,
+    extractedTextPreview: urlAnalysis.healedText || ocr.text,
     heuristicScore,
   });
 
-  const risk_score = analysis.risk_score;
-  const risk_level = analysis.risk_level ?? scoreToRiskLevel(risk_score);
+  // Never allow AI to mark a screenshot SAFE when URL intel found high/critical phishing
+  const floored = applyUrlRiskFloor(heuristicScore, analysis.risk_score, urlAnalysis.riskFloor);
 
-  // Always attach a data URL for the interactive viewer (kept in memory; may be omitted from remote DB).
+  // Prefer URL-intel explanation when phishing URLs dominate
+  const phishingFinding = findings.find(
+    (f) =>
+      f.category === "url" &&
+      (f.risk_level === "critical" || f.risk_level === "high") &&
+      /phish|typosquat|impersonat|homoglyph|lookalike/i.test(
+        `${f.label} ${f.reason} ${f.risk_category ?? ""}`,
+      ),
+  );
+  const ai_explanation =
+    phishingFinding && floored.risk_level !== "safe" && floored.risk_level !== "low"
+      ? phishingFinding.reason
+      : analysis.ai_explanation;
+
+  let recommendations = analysis.recommendations;
+  if (
+    phishingFinding &&
+    !recommendations.some((r) => /credential|official|phish/i.test(r.title + r.description))
+  ) {
+    recommendations = [
+      {
+        id: "url-phishing",
+        title: "Do not enter credentials",
+        description: phishingFinding.recommendation,
+        priority: "immediate" as const,
+      },
+      ...recommendations,
+    ];
+  }
+
   const image_data_url = bufferToDataUrl(input.buffer, input.mimeType);
 
   const record: ImageScanRecord = {
@@ -102,13 +142,17 @@ export async function scanImage(input: {
     mime_type: input.mimeType,
     file_size: input.fileSize,
     status: "completed",
-    risk_level,
-    risk_score,
-    confidence: analysis.confidence,
+    risk_level: floored.risk_level,
+    risk_score: floored.risk_score,
+    confidence: Math.max(
+      analysis.confidence,
+      ...findings.filter((f) => f.category === "url").map((f) => f.confidence ?? 0),
+      urlAnalysis.riskFloor >= 75 ? 92 : 0,
+    ),
     extracted_text: ocr.text,
     findings,
-    recommendations: analysis.recommendations,
-    ai_explanation: analysis.ai_explanation,
+    recommendations,
+    ai_explanation,
     image_data_url,
     image_width: dims.width || null,
     image_height: dims.height || null,

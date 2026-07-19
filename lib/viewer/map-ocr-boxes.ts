@@ -68,13 +68,30 @@ export function attachBoundingBoxes(findings: ImageFinding[], words: OcrWord[]):
     }
 
     if (!best) {
-      // Soft fallback: first word that contains a distinctive fragment
-      const fragment = target.slice(0, Math.min(8, target.length));
+      // Soft fallback: distinctive fragment (prefer host label over "https")
+      const hostFragment = target
+        .replace(/^https?/i, "")
+        .replace(/^www/i, "")
+        .slice(0, Math.min(12, Math.max(0, target.length - 4)));
+      const fragment =
+        hostFragment.length >= 4 ? hostFragment : target.slice(0, Math.min(8, target.length));
       const idx = words.findIndex(
         (w) => compact(w.text).includes(fragment) && fragment.length >= 3,
       );
-      if (idx === -1) return finding;
-      best = { start: idx, end: idx, score: 1 };
+      if (idx === -1) {
+        // Try registrable-looking token inside the URL value
+        const tokens = finding.value.toLowerCase().match(/[a-z0-9]{5,}/g) ?? [];
+        const hit = tokens.findIndex((t) =>
+          words.some((w) => compact(w.text).includes(compact(t))),
+        );
+        if (hit === -1) return finding;
+        const token = tokens[hit]!;
+        const wordIdx = words.findIndex((w) => compact(w.text).includes(compact(token)));
+        if (wordIdx === -1) return finding;
+        best = { start: wordIdx, end: wordIdx, score: 1 };
+      } else {
+        best = { start: idx, end: idx, score: 1 };
+      }
     }
 
     usedRanges.push({ start: best.start, end: best.end });
