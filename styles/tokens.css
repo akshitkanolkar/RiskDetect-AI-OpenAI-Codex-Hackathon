@@ -1,0 +1,155 @@
+/**
+ * SafeLens AI — Design Tokens (CSS Custom Properties)
+ * Dark-first. Cyan lens accent. Slate depth. Glass surfaces.
+ */
+
+:root {
+  /* —— Light theme —— */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 8%;
+
+  --surface: 0 0% 100%;
+  --surface-elevated: 0 0% 100%;
+  --surface-overlay: 210 40% 96%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 8%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 8%;
+
+  --primary: 191 91% 32%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 30% 94%;
+  --secondary-foreground: 222 47% 12%;
+
+  --muted: 210 30% 94%;
+  --muted-foreground: 215 16% 42%;
+
+  --accent: 191 70% 94%;
+  --accent-foreground: 191 91% 24%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 160 84% 30%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 38 92% 44%;
+  --warning-foreground: 222 47% 8%;
+
+  --danger: 0 72% 51%;
+  --danger-foreground: 0 0% 100%;
+
+  --info: 199 89% 40%;
+  --info-foreground: 0 0% 100%;
+
+  --brand: 191 91% 36%;
+  --brand-foreground: 0 0% 100%;
+  --brand-muted: 191 70% 94%;
+  --brand-glow: 191 91% 45%;
+  --brand-50: 191 80% 96%;
+  --brand-100: 191 75% 90%;
+  --brand-500: 191 91% 36%;
+  --brand-600: 191 91% 28%;
+  --brand-900: 191 70% 12%;
+
+  --border: 214 25% 88%;
+  --input: 214 25% 88%;
+  --ring: 191 91% 36%;
+
+  --risk-critical: 0 72% 51%;
+  --risk-high: 24 95% 48%;
+  --risk-medium: 38 92% 48%;
+  --risk-low: 199 89% 42%;
+  --risk-safe: 160 84% 32%;
+
+  --radius: 0.75rem;
+
+  --shadow-low: 0 1px 2px hsl(222 47% 11% / 0.04);
+  --shadow-medium: 0 4px 16px hsl(222 47% 11% / 0.06);
+  --shadow-high: 0 12px 32px hsl(222 47% 11% / 0.1);
+  --shadow-floating: 0 20px 48px hsl(222 47% 11% / 0.14);
+  --shadow-glass: 0 4px 24px hsl(222 47% 11% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.8);
+  --shadow-hover: 0 8px 28px hsl(191 91% 36% / 0.12);
+  --shadow-modal: 0 24px 64px hsl(222 47% 11% / 0.2);
+  --shadow-dropdown: 0 8px 24px hsl(222 47% 11% / 0.12);
+  --shadow-glow: 0 0 32px hsl(191 91% 45% / 0.25);
+
+  --sidebar-width: 16rem;
+  --sidebar-collapsed: 4.5rem;
+  --topbar-height: 4rem;
+}
+
+.dark {
+  --background: 222 47% 5%;
+  --foreground: 210 40% 98%;
+
+  --surface: 222 40% 7%;
+  --surface-elevated: 222 36% 9%;
+  --surface-overlay: 222 32% 11%;
+
+  --card: 222 36% 8%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 36% 9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 187 92% 52%;
+  --primary-foreground: 222 47% 6%;
+
+  --secondary: 222 28% 14%;
+  --secondary-foreground: 210 40% 96%;
+
+  --muted: 222 28% 12%;
+  --muted-foreground: 215 16% 62%;
+
+  --accent: 191 50% 14%;
+  --accent-foreground: 187 92% 70%;
+
+  --destructive: 0 72% 55%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 160 70% 42%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 38 92% 52%;
+  --warning-foreground: 222 47% 8%;
+
+  --danger: 0 72% 55%;
+  --danger-foreground: 0 0% 100%;
+
+  --info: 199 89% 55%;
+  --info-foreground: 222 47% 6%;
+
+  --brand: 187 92% 52%;
+  --brand-foreground: 222 47% 6%;
+  --brand-muted: 191 50% 14%;
+  --brand-glow: 187 92% 58%;
+  --brand-50: 191 40% 10%;
+  --brand-100: 191 45% 14%;
+  --brand-500: 187 92% 52%;
+  --brand-600: 187 85% 42%;
+  --brand-900: 187 80% 90%;
+
+  --border: 222 28% 16%;
+  --input: 222 28% 16%;
+  --ring: 187 92% 52%;
+
+  --risk-critical: 0 78% 58%;
+  --risk-high: 24 95% 55%;
+  --risk-medium: 38 92% 55%;
+  --risk-low: 199 89% 55%;
+  --risk-safe: 160 70% 45%;
+
+  --shadow-low: 0 1px 2px hsl(0 0% 0% / 0.3);
+  --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.35);
+  --shadow-high: 0 12px 32px hsl(0 0% 0% / 0.45);
+  --shadow-floating: 0 20px 48px hsl(0 0% 0% / 0.55);
+  --shadow-glass: 0 4px 24px hsl(0 0% 0% / 0.35), inset 0 1px 0 hsl(0 0% 100% / 0.06);
+  --shadow-hover: 0 8px 32px hsl(187 92% 52% / 0.18);
+  --shadow-modal: 0 24px 64px hsl(0 0% 0% / 0.65);
+  --shadow-dropdown: 0 8px 28px hsl(0 0% 0% / 0.5);
+  --shadow-glow: 0 0 40px hsl(187 92% 52% / 0.3);
+}
