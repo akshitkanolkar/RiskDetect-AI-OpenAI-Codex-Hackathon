@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  let displayName = DEMO_USER.user_metadata.full_name;
+  let displayName: string = DEMO_USER.user_metadata.full_name;
   let email: string | undefined = DEMO_USER.email;
   let avatarUrl: string | undefined;
-  let userId = DEMO_USER.id;
+  let userId: string = DEMO_USER.id;
 
   if (!isAuthDisabled() && isSupabaseConfigured()) {
     const supabase = await createServerClient();
