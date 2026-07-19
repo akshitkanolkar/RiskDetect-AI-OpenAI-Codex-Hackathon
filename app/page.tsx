@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/animations/fade-in";
 import { StaggerChildren, StaggerItem } from "@/components/animations/stagger-children";
+import { AppFooter } from "@/components/layout/app-footer";
 
 export const metadata: Metadata = {
   title: `${APP_NAME} — ${APP_TAGLINE}`,
@@ -98,6 +99,8 @@ export default function HomePage() {
           ))}
         </StaggerChildren>
       </main>
+
+      <AppFooter className="relative z-10 border-border/40 bg-transparent" />
     </div>
   );
 }

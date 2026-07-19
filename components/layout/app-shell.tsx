@@ -8,6 +8,7 @@ import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { TopBar } from "@/components/navigation/top-bar";
 import { CommandMenu } from "@/components/navigation/command-menu";
 import { MobileNav } from "./mobile-nav";
+import { AppFooter } from "./app-footer";
 import { Button } from "@/components/ui/button";
 
 const SecurityCopilot = dynamic(
@@ -40,7 +41,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <TopBar user={user} />
           </div>
         </div>
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex flex-1 flex-col overflow-y-auto">
+          <div className="flex-1">{children}</div>
+          <AppFooter />
+        </main>
       </div>
       <CommandMenu />
       <SecurityCopilot />
