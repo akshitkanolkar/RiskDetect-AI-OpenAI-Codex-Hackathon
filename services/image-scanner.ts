@@ -2,65 +2,65 @@ import { createWorker } from "tesseract.js";
 import jsQR from "jsqr";
 import { aiService } from "@/services/ai";
 import { createId, nowIso, saveImageScan, saveRiskHistory } from "@/lib/db/scans";
-import { detectSensitivePatterns, scoreImageFindings } from "@/lib/secrets/patterns";
+import { runDetectionPipeline, scoreImageFindings } from "@/services/detection";
+import { attachBoundingBoxes, type OcrWord } from "@/lib/viewer/map-ocr-boxes";
+import { readImageDimensions } from "@/lib/viewer/image-dimensions";
 import type { ImageFinding, ImageScanRecord } from "@/types/scans";
 import { scoreToRiskLevel } from "@/utils/risk";
 import { logError } from "@/lib/api/response";
 
-async function runOcr(buffer: Buffer): Promise<string> {
+interface OcrResult {
+  text: string;
+  words: OcrWord[];
+}
+
+async function runOcr(buffer: Buffer): Promise<OcrResult> {
   try {
     const worker = await createWorker("eng");
     const result = await worker.recognize(buffer);
     await worker.terminate();
-    return result.data.text?.trim() ?? "";
+
+    const words: OcrWord[] = [];
+    for (const block of result.data.blocks ?? []) {
+      for (const paragraph of block.paragraphs ?? []) {
+        for (const line of paragraph.lines ?? []) {
+          for (const word of line.words ?? []) {
+            if (!word.text?.trim()) continue;
+            words.push({
+              text: word.text,
+              confidence: word.confidence,
+              bbox: word.bbox,
+            });
+          }
+        }
+      }
+    }
+
+    return {
+      text: result.data.text?.trim() ?? "",
+      words,
+    };
   } catch (error) {
     logError("ocr", "Tesseract failed", {
       error: error instanceof Error ? error.message : String(error),
     });
-    return "";
+    return { text: "", words: [] };
   }
 }
 
 async function detectQrCodes(buffer: Buffer, mimeType: string): Promise<ImageFinding[]> {
   try {
-    // Decode via createImageBitmap path is browser-only; on server use PNG/JPEG dimensions via sharp-less approach.
-    // For MVP without sharp, skip pixel decode when canvas unavailable and rely on OCR "QR" hints.
     void buffer;
     void mimeType;
+    void jsQR;
     return [];
   } catch {
     return [];
   }
 }
 
-function detectQrFromText(text: string): ImageFinding[] {
-  const findings: ImageFinding[] = [];
-  if (/qr\s*code|scan\s*to\s*pay|upi:\/\/|otpauth:\/\//i.test(text)) {
-    findings.push({
-      id: createId(),
-      category: "qr",
-      label: "QR / payment code reference",
-      value: "QR-related content detected in OCR text",
-      risk_level: "high",
-      reason: "QR codes can redirect to phishing or payment fraud pages.",
-      recommendation: "Do not scan unknown QR codes from shared screenshots.",
-    });
-  }
-  const upiDeep = text.match(/upi:\/\/[^\s]+/gi) ?? [];
-  for (const value of upiDeep) {
-    findings.push({
-      id: createId(),
-      category: "qr",
-      label: "UPI deep link",
-      value,
-      risk_level: "high",
-      reason: "UPI payment deep links can trigger wallet prompts.",
-      recommendation: "Verify payment requests inside your official banking app only.",
-    });
-  }
-  // Keep jsQR imported for future canvas-based decoding in edge runtime upgrades
-  void jsQR;
-  return findings;
+function bufferToDataUrl(buffer: Buffer, mimeType: string): string {
+  return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
 export async function scanImage(input: {
@@ -70,13 +70,11 @@ export async function scanImage(input: {
   fileSize: number;
   buffer: Buffer;
 }): Promise<ImageScanRecord> {
-  const extractedText = await runOcr(input.buffer);
-  const patternFindings = detectSensitivePatterns(extractedText);
-  const qrFindings = [
-    ...(await detectQrCodes(input.buffer, input.mimeType)),
-    ...detectQrFromText(extractedText),
-  ];
-  const findings = [...patternFindings, ...qrFindings];
+  const ocr = await runOcr(input.buffer);
+  const dims = readImageDimensions(input.buffer, input.mimeType);
+  const pipeline = runDetectionPipeline(ocr.text);
+  const pixelQr = await detectQrCodes(input.buffer, input.mimeType);
+  const findings = attachBoundingBoxes([...pipeline.findings, ...pixelQr], ocr.words);
 
   const heuristicScore = scoreImageFindings(findings);
   const analysis = await aiService.analyzeImage({
@@ -87,12 +85,15 @@ export async function scanImage(input: {
       value: f.value,
       risk_level: f.risk_level,
     })),
-    extractedTextPreview: extractedText,
+    extractedTextPreview: ocr.text,
     heuristicScore,
   });
 
   const risk_score = analysis.risk_score;
   const risk_level = analysis.risk_level ?? scoreToRiskLevel(risk_score);
+
+  // Always attach a data URL for the interactive viewer (kept in memory; may be omitted from remote DB).
+  const image_data_url = bufferToDataUrl(input.buffer, input.mimeType);
 
   const record: ImageScanRecord = {
     id: createId(),
@@ -104,10 +105,13 @@ export async function scanImage(input: {
     risk_level,
     risk_score,
     confidence: analysis.confidence,
-    extracted_text: extractedText,
+    extracted_text: ocr.text,
     findings,
     recommendations: analysis.recommendations,
     ai_explanation: analysis.ai_explanation,
+    image_data_url,
+    image_width: dims.width || null,
+    image_height: dims.height || null,
     created_at: nowIso(),
     updated_at: nowIso(),
     deleted_at: null,

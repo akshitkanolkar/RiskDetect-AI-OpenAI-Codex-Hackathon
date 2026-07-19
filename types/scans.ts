@@ -55,12 +55,36 @@ export type FindingCategory =
   | "upi"
   | "qr"
   | "credit_card"
+  | "debit_card"
+  | "cvv"
+  | "card_expiry"
+  | "bank_account"
+  | "ifsc"
   | "pan"
   | "aadhaar"
+  | "passport"
   | "password"
   | "api_key"
+  | "jwt"
+  | "aws_key"
+  | "github_token"
+  | "private_key"
   | "secret"
+  | "url"
+  | "ip_address"
+  | "mac_address"
+  | "transaction_id"
+  | "order_id"
+  | "invoice_id"
   | "sensitive";
+
+/** Pixel bounding box in original image coordinates (Tesseract space). */
+export interface FindingBoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 export interface ImageFinding {
   id: string;
@@ -72,6 +96,13 @@ export interface ImageFinding {
   recommendation: string;
   start?: number;
   end?: number;
+  confidence?: number;
+  validation_method?: string;
+  risk_category?: string;
+  ocr_source?: string;
+  context?: string;
+  /** Absolute pixel box on the source image, when OCR layout was available. */
+  bbox?: FindingBoundingBox;
 }
 
 export interface ImageScanRecord {
@@ -88,14 +119,17 @@ export interface ImageScanRecord {
   findings: ImageFinding[];
   recommendations: Recommendation[];
   ai_explanation: string;
+  /** Data URL of the uploaded screenshot (demo / preview persistence). */
+  image_data_url?: string | null;
+  image_width?: number | null;
+  image_height?: number | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
 }
 
 export type UnifiedScan =
-  | (UrlScanRecord & { scan_type: "url" })
-  | (ImageScanRecord & { scan_type: "image" });
+  (UrlScanRecord & { scan_type: "url" }) | (ImageScanRecord & { scan_type: "image" });
 
 export interface ChatSessionRecord {
   id: string;

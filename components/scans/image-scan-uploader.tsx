@@ -9,6 +9,7 @@ import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { cacheScanPreview, fileToDataUrl } from "@/lib/viewer/preview-cache";
 
 const ACCEPT = ["image/png", "image/jpeg", "image/webp"];
 
@@ -21,27 +22,30 @@ export function ImageScanUploader() {
   const [preview, setPreview] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
-  const onFile = useCallback((next: File | null) => {
-    if (!next) return;
-    if (!ACCEPT.includes(next.type) && !/\.(png|jpe?g|webp)$/i.test(next.name)) {
-      toast({
-        variant: "destructive",
-        title: "Unsupported file",
-        description: "Upload a PNG, JPEG, or WEBP image.",
-      });
-      return;
-    }
-    if (next.size > 8 * 1024 * 1024) {
-      toast({
-        variant: "destructive",
-        title: "File too large",
-        description: "Keep uploads under 8MB.",
-      });
-      return;
-    }
-    setFile(next);
-    setPreview(URL.createObjectURL(next));
-  }, [toast]);
+  const onFile = useCallback(
+    (next: File | null) => {
+      if (!next) return;
+      if (!ACCEPT.includes(next.type) && !/\.(png|jpe?g|webp)$/i.test(next.name)) {
+        toast({
+          variant: "destructive",
+          title: "Unsupported file",
+          description: "Upload a PNG, JPEG, or WEBP image.",
+        });
+        return;
+      }
+      if (next.size > 8 * 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Keep uploads under 8MB.",
+        });
+        return;
+      }
+      setFile(next);
+      setPreview(URL.createObjectURL(next));
+    },
+    [toast],
+  );
 
   const onDrop = (event: React.DragEvent) => {
     event.preventDefault();
@@ -55,7 +59,9 @@ export function ImageScanUploader() {
     setProgress(10);
     const timer = setInterval(() => setProgress((p) => Math.min(88, p + 6)), 350);
     try {
+      const dataUrl = await fileToDataUrl(file);
       const result = await scan.mutateAsync(file);
+      cacheScanPreview(result.id, result.image_data_url || dataUrl);
       setProgress(100);
       toast({
         title: "Screenshot analyzed",
@@ -110,9 +116,7 @@ export function ImageScanUploader() {
         ) : (
           <Upload className="mb-3 h-8 w-8 text-brand" />
         )}
-        <p className="text-sm font-medium">
-          {file ? file.name : "Drag & drop a screenshot here"}
-        </p>
+        <p className="text-sm font-medium">{file ? file.name : "Drag & drop a screenshot here"}</p>
         <p className="mt-1 text-xs text-muted-foreground">PNG, JPEG, or WEBP up to 8MB</p>
         <label className="mt-4">
           <input
@@ -135,11 +139,7 @@ export function ImageScanUploader() {
       )}
 
       <div className="mt-4 flex gap-2">
-        <Button
-          variant="brand"
-          disabled={!file || scan.isPending}
-          onClick={() => void startScan()}
-        >
+        <Button variant="brand" disabled={!file || scan.isPending} onClick={() => void startScan()}>
           {scan.isPending ? (
             <>
               <Loader2 className="animate-spin" />

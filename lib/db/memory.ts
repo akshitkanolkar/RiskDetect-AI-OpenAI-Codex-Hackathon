@@ -44,7 +44,10 @@ export const memoryDb = {
     return record;
   },
   insertImageScan(record: ImageScanRecord) {
-    store().imageScans.unshift(record);
+    const list = store().imageScans;
+    const idx = list.findIndex((s) => s.id === record.id);
+    if (idx >= 0) list[idx] = record;
+    else list.unshift(record);
     return record;
   },
   insertRiskHistory(record: RiskHistoryRecord) {
@@ -58,7 +61,9 @@ export const memoryDb = {
     return store().imageScans.filter((s) => s.user_id === userId && !s.deleted_at);
   },
   getUrlScan(id: string, userId: string) {
-    return store().urlScans.find((s) => s.id === id && s.user_id === userId && !s.deleted_at) ?? null;
+    return (
+      store().urlScans.find((s) => s.id === id && s.user_id === userId && !s.deleted_at) ?? null
+    );
   },
   getImageScan(id: string, userId: string) {
     return (
