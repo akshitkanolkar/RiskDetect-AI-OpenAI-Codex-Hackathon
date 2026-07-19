@@ -251,11 +251,11 @@ Built for real India-aware cases (UPI, Aadhaar, PAN, IFSC) and a product UX peop
 
 ## Demo
 
-|               |                      |
-| ------------- | -------------------- |
-| **Live demo** | _Add URL_            |
-| **Video**     | _Add link_           |
-| **Samples**   | `samples-hackathon/` |
+|               |                                                                                    |
+| ------------- | ---------------------------------------------------------------------------------- |
+| **Live demo** | https://risk-detect-ai-open-ai-codex-hackathon-rjx9-mghv8zc6s-akshitkk.vercel.app/ |
+| **Video**     | _Add link_                                                                         |
+| **Samples**   | `samples-hackathon/`                                                               |
 
 ---
 

@@ -28,6 +28,16 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(url && key && !url.includes("your-project") && !key.includes("your-anon-key"));
 }
 
+/**
+ * Auth UI stays in the app; login is not required when disabled.
+ * Default: disabled (demo user). Set NEXT_PUBLIC_AUTH_DISABLED=false to require login.
+ */
+export function isAuthDisabled(): boolean {
+  const flag = process.env.NEXT_PUBLIC_AUTH_DISABLED?.toLowerCase();
+  if (flag === "false" || flag === "0") return false;
+  return true;
+}
+
 export function isOpenAIConfigured(): boolean {
   return Boolean(process.env.OPENAI_API_KEY);
 }

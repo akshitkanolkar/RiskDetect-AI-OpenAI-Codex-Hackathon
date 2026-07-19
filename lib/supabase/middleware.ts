@@ -1,13 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { isSupabaseConfigured } from "@/lib/env";
+import { isAuthDisabled, isSupabaseConfigured } from "@/lib/env";
 import { AUTH_ROUTES, PROTECTED_ROUTES, ROUTES } from "@/constants/routes";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
-  if (!isSupabaseConfigured()) {
-    // Demo mode: allow app routes without auth so MVP features are usable locally.
+  // Auth disabled (default) or Supabase missing: allow app with demo user access.
+  if (isAuthDisabled() || !isSupabaseConfigured()) {
     return supabaseResponse;
   }
 

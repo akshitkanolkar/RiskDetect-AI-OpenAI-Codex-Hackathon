@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createServerClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/env";
-import { DEMO_USER_ID } from "@/lib/api/auth";
+import { isAuthDisabled, isSupabaseConfigured } from "@/lib/env";
+import { DEMO_USER } from "@/lib/api/demo-user";
 import { PageShell } from "@/components/layout/page-shell";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  let displayName = "Demo User";
-  let email: string | undefined = "demo@riskdetect.ai";
+  let displayName = DEMO_USER.user_metadata.full_name;
+  let email: string | undefined = DEMO_USER.email;
   let avatarUrl: string | undefined;
-  let userId = DEMO_USER_ID;
+  let userId = DEMO_USER.id;
 
-  if (isSupabaseConfigured()) {
+  if (!isAuthDisabled() && isSupabaseConfigured()) {
     const supabase = await createServerClient();
     const {
       data: { user },
@@ -28,7 +28,7 @@ export default async function ProfilePage() {
       "User";
     email = user?.email;
     avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
-    userId = user?.id ?? DEMO_USER_ID;
+    userId = user?.id ?? DEMO_USER.id;
   }
 
   const initials = displayName

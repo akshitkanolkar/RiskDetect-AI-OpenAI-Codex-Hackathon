@@ -1,15 +1,12 @@
 import { createServerClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/env";
+import { isAuthDisabled, isSupabaseConfigured } from "@/lib/env";
+import { DEMO_USER } from "@/lib/api/demo-user";
 
-export const DEMO_USER_ID = "00000000-0000-4000-8000-000000000001";
+export { DEMO_USER, DEMO_USER_ID } from "@/lib/api/demo-user";
 
 export async function requireUser() {
-  if (!isSupabaseConfigured()) {
-    return {
-      id: DEMO_USER_ID,
-      email: "demo@riskdetect.ai",
-      user_metadata: { full_name: "Demo User" },
-    };
+  if (isAuthDisabled() || !isSupabaseConfigured()) {
+    return { ...DEMO_USER };
   }
 
   const supabase = await createServerClient();

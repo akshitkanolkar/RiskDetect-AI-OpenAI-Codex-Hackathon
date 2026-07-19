@@ -4,6 +4,7 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { authService } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
+import { isAuthDisabled } from "@/lib/env";
 
 export function useAuth() {
   const router = useRouter();
@@ -13,6 +14,10 @@ export function useAuth() {
   const reset = useAuthStore((state) => state.reset);
 
   const signOut = async () => {
+    if (isAuthDisabled()) {
+      router.push(ROUTES.DASHBOARD);
+      return;
+    }
     await authService.signOut();
     reset();
     router.push(ROUTES.LOGIN);
