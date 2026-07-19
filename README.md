@@ -14,10 +14,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=nextdotjs" alt="Next.js" />
-  <img src="https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?style=flat-square&logo=openai&logoColor=white" alt="OpenAI" />
-  <img src="https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3FCF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
-  <img src="https://img.shields.io/badge/OCR-Tesseract.js-EA4335?style=flat-square" alt="Tesseract" />
+  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&amp;logo=nextdotjs&amp;logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?style=flat-square&amp;logo=openai&amp;logoColor=white" alt="OpenAI" />
+  <img src="https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ECF8E?style=flat-square&amp;logo=supabase&amp;logoColor=black" alt="Supabase" />
+  <img src="https://img.shields.io/badge/OCR-Tesseract.js-EA4335?style=flat-square&amp;logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE0IDJINmEyIDIgMCAwIDAtMiAydjE2YTIgMiAwIDAgMCAyIDJoMTJhMiAyIDAgMCAwIDItMlY4bC02LTZ6bTQgMThINlY0aDd2NWg1djExek04IDEyaDh2MS41SDhWMTJ6bTAgM2g4djEuNUg4VjE1em0wIDNoNXYxLjVIOFYxOHoiLz48L3N2Zz4=" alt="Tesseract" />
 </p>
 
 ---
@@ -212,24 +212,16 @@ Built for real India-aware cases (UPI, Aadhaar, PAN, IFSC) and a product UX peop
 
 ## Team
 
-| Name        | Role                 |
-| ----------- | -------------------- |
-| _Your name_ | Full-stack / product |
-| _Teammate_  | Frontend / design    |
-| _Teammate_  | AI / security        |
+| Name            | Role                     |
+| --------------- | ------------------------ |
+| Akshit Kanolkar | Senior Software Engineer |
 
 ---
 
-## For Judges
+## Closing Note
 
-Thanks for reviewing **SafeLens AI**.
+SafeLens AI started from a simple idea: people share screenshots and links every day without seeing what they expose. This project turns that moment into a clear risk report — detect, validate, explain, and help you share safely.
 
-We built this for a real privacy problem: people share screenshots and links without knowing what leaks. SafeLens goes beyond OCR — it **validates**, **scores**, **explains**, and helps you **fix** exposure before you hit send.
+Built solo for the OpenAI Codex Hackathon, with **Cursor** and **OpenAI Codex** used throughout development and planning to move faster on architecture, implementation, and iteration.
 
-We hope the detection quality, interactive report, and polish come through in the demo.
-
----
-
-## Credits
-
-Built with OpenAI, Next.js, Supabase, Tesseract.js, Tailwind, shadcn/ui, and Framer Motion.
+Thank you for the opportunity — I would love to hear your feedback.
