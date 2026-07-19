@@ -7,10 +7,7 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(
-    path: string,
-    options: RequestInit = {},
-  ): Promise<ApiResult<T>> {
+  private async request<T>(path: string, options: RequestInit = {}): Promise<ApiResult<T>> {
     try {
       const response = await fetch(`${this.baseUrl}${path}`, {
         ...options,

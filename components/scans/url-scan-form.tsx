@@ -103,7 +103,12 @@ export function UrlScanForm() {
             </div>
           )}
 
-          <Button type="submit" variant="brand" className="w-full sm:w-auto" disabled={scan.isPending}>
+          <Button
+            type="submit"
+            variant="brand"
+            className="w-full sm:w-auto"
+            disabled={scan.isPending}
+          >
             {scan.isPending ? (
               <>
                 <Loader2 className="animate-spin" />

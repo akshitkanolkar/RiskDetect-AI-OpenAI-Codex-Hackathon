@@ -15,7 +15,7 @@ export default function RegisterPage() {
           <Logo />
         </div>
         <h1 className="text-page">Create an account</h1>
-        <p className="mt-2 text-caption">Start protecting your digital life today</p>
+        <p className="text-caption mt-2">Start protecting your digital life today</p>
       </div>
       <RegisterForm />
     </div>

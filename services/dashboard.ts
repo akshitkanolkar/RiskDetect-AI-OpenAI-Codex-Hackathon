@@ -68,7 +68,8 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
   const activity = history.slice(0, 8).map((scan) => ({
     id: scan.id,
-    title: scan.scan_type === "url" ? `URL scan · ${scan.domain}` : `Image scan · ${scan.file_name}`,
+    title:
+      scan.scan_type === "url" ? `URL scan · ${scan.domain}` : `Image scan · ${scan.file_name}`,
     description:
       scan.scan_type === "url"
         ? scan.ai_explanation.slice(0, 120)

@@ -4,19 +4,19 @@ Premium, dark-first design language for an AI digital risk intelligence platform
 
 ## Brand identity
 
-- **Name:** SafeLens AI  
-- **Tagline:** See digital risks before they become disasters.  
-- **Personality:** Trustworthy, precise, intelligent, calm under pressure.  
+- **Name:** SafeLens AI
+- **Tagline:** See digital risks before they become disasters.
+- **Personality:** Trustworthy, precise, intelligent, calm under pressure.
 - **Accent:** Cyan “lens” (`brand`) — not purple. Communicates scanning, clarity, and security.
 
 ## Foundations
 
-| Token set | Location |
-|-----------|----------|
-| CSS variables | `styles/tokens.css` |
-| Theme exports | `theme/` |
-| Global styles | `app/globals.css` |
-| Tailwind map | `tailwind.config.ts` |
+| Token set     | Location             |
+| ------------- | -------------------- |
+| CSS variables | `styles/tokens.css`  |
+| Theme exports | `theme/`             |
+| Global styles | `app/globals.css`    |
+| Tailwind map  | `tailwind.config.ts` |
 
 ### Color
 
@@ -85,16 +85,16 @@ Empty / error / success / loading states. Search + password inputs.
 
 ## Usage rules
 
-1. Use semantic tokens — no one-off hex.  
-2. Prefer `glass-panel` / `glass-subtle` for elevated surfaces.  
-3. Compose variants with CVA.  
-4. Keep motion subtle; performance first.  
+1. Use semantic tokens — no one-off hex.
+2. Prefer `glass-panel` / `glass-subtle` for elevated surfaces.
+3. Compose variants with CVA.
+4. Keep motion subtle; performance first.
 5. No business logic inside design-system components.
 
 ## Extending
 
-1. Add CSS vars to `styles/tokens.css` (light + `.dark`).  
-2. Map in `tailwind.config.ts` if needed.  
-3. Export from `theme/` when shared in TS.  
-4. Build the primitive in `components/ui` with CVA + `cn`.  
+1. Add CSS vars to `styles/tokens.css` (light + `.dark`).
+2. Map in `tailwind.config.ts` if needed.
+3. Export from `theme/` when shared in TS.
+4. Build the primitive in `components/ui` with CVA + `cn`.
 5. Document variants here.

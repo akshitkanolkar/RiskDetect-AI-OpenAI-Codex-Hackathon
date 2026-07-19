@@ -3,13 +3,7 @@
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
-export function ConfidenceMeter({
-  value,
-  className,
-}: {
-  value: number;
-  className?: string;
-}) {
+export function ConfidenceMeter({ value, className }: { value: number; className?: string }) {
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between text-sm">

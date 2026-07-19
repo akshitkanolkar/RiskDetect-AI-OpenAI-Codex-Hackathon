@@ -62,9 +62,7 @@ async function persistMessage(message: ChatMessageRecord) {
   return data as ChatMessageRecord;
 }
 
-function buildScansContext(
-  scans: Awaited<ReturnType<typeof listUserHistory>>,
-): string {
+function buildScansContext(scans: Awaited<ReturnType<typeof listUserHistory>>): string {
   if (!scans.length) return "";
   return scans
     .slice(0, 5)

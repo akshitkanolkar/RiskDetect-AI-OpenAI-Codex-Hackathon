@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import {
-  Activity,
-  ImageIcon,
-  Link2,
-  ScanSearch,
-  ShieldAlert,
-  ShieldCheck,
-} from "lucide-react";
+import { Activity, ImageIcon, Link2, ScanSearch, ShieldAlert, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/layout/page-shell";
 import { PageHeader } from "@/components/common/page-header";
 import { DashboardGrid } from "@/components/dashboard/dashboard-grid";
@@ -206,7 +199,9 @@ export default function DashboardPage() {
               }))}
             />
           ) : (
-            <p className="py-8 text-center text-sm text-muted-foreground">No timeline events yet.</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              No timeline events yet.
+            </p>
           )}
         </Widget>
       </div>

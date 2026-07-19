@@ -17,13 +17,7 @@ const statusColor: Record<NonNullable<TimelineItem["status"]>, string> = {
   info: "bg-info",
 };
 
-export function Timeline({
-  items,
-  className,
-}: {
-  items: TimelineItem[];
-  className?: string;
-}) {
+export function Timeline({ items, className }: { items: TimelineItem[]; className?: string }) {
   return (
     <ol className={cn("relative space-y-6 border-l border-border pl-6", className)}>
       {items.map((item) => (

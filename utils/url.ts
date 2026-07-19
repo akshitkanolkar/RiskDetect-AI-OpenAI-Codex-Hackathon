@@ -52,7 +52,10 @@ export function hasIpHostname(hostname: string): boolean {
 }
 
 export function looksLikeHomoglyph(hostname: string): boolean {
-  return /[0o]/.test(hostname) && /(amaz[0o]n|g[0o]{2}gle|micr[0o]s[0o]ft|paypa[l1]|faceb[0o]{2}k)/i.test(hostname);
+  return (
+    /[0o]/.test(hostname) &&
+    /(amaz[0o]n|g[0o]{2}gle|micr[0o]s[0o]ft|paypa[l1]|faceb[0o]{2}k)/i.test(hostname)
+  );
 }
 
 export function estimateDomainAgeDays(domain: string): number | null {

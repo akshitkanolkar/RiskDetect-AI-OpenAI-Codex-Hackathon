@@ -15,7 +15,7 @@ export default function LoginPage() {
           <Logo />
         </div>
         <h1 className="text-page">Welcome back</h1>
-        <p className="mt-2 text-caption">Sign in to your account to continue</p>
+        <p className="text-caption mt-2">Sign in to your account to continue</p>
       </div>
       <LoginForm />
     </div>

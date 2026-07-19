@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 import { layoutTokens } from "./theme/spacing";
 
 const config: Config = {
@@ -195,16 +196,13 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "brand-gradient":
-          "linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-600)))",
-        "hero-glow":
-          "radial-gradient(ellipse at top, hsl(var(--brand) / 0.15), transparent 60%)",
-        shimmer:
-          "linear-gradient(90deg, transparent, hsl(var(--brand) / 0.08), transparent)",
+        "brand-gradient": "linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-600)))",
+        "hero-glow": "radial-gradient(ellipse at top, hsl(var(--brand) / 0.15), transparent 60%)",
+        shimmer: "linear-gradient(90deg, transparent, hsl(var(--brand) / 0.08), transparent)",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

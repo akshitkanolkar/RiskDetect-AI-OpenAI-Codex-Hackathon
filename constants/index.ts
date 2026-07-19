@@ -31,8 +31,4 @@ export const SCAN_TYPES = {
   FOOTPRINT: "footprint",
 } as const;
 
-export {
-  ROUTES,
-  AUTH_ROUTES,
-  PROTECTED_ROUTES,
-} from "./routes";
+export { ROUTES, AUTH_ROUTES, PROTECTED_ROUTES } from "./routes";

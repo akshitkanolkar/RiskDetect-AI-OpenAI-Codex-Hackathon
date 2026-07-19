@@ -11,10 +11,7 @@ export const metadata: Metadata = {
 export default function SettingsPage() {
   return (
     <PageShell className="max-w-3xl">
-      <PageHeader
-        title="Settings"
-        description="Manage appearance and account preferences."
-      />
+      <PageHeader title="Settings" description="Manage appearance and account preferences." />
       <Card className="mt-8 border-border/60 bg-card/60">
         <CardHeader>
           <CardTitle className="text-card-title">Appearance</CardTitle>

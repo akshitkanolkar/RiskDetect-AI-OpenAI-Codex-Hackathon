@@ -56,7 +56,11 @@ export default function HistoryPage() {
       sortable: true,
       render: (row) => (
         <span className="inline-flex items-center gap-1.5 capitalize text-muted-foreground">
-          {row.type === "url" ? <Link2 className="h-3.5 w-3.5" /> : <ImageIcon className="h-3.5 w-3.5" />}
+          {row.type === "url" ? (
+            <Link2 className="h-3.5 w-3.5" />
+          ) : (
+            <ImageIcon className="h-3.5 w-3.5" />
+          )}
           {row.type}
         </span>
       ),

@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Link2,
-  ImageIcon,
-  History,
-  Settings,
-  User,
-} from "lucide-react";
+import { LayoutDashboard, Link2, ImageIcon, History, Settings, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import { Logo } from "@/components/shared/logo";

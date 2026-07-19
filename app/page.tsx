@@ -69,7 +69,7 @@ export default function HomePage() {
             <h1 className="text-hero text-foreground">
               <span className="text-gradient">{APP_TAGLINE}</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-subtitle">{APP_DESCRIPTION}</p>
+            <p className="text-subtitle mx-auto mt-6 max-w-2xl">{APP_DESCRIPTION}</p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button variant="brand" size="lg" asChild className="glow-brand">
                 <Link href={ROUTES.REGISTER}>
@@ -92,7 +92,7 @@ export default function HomePage() {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <h2 className="text-card-title text-foreground">{title}</h2>
-                <p className="mt-2 text-caption leading-relaxed">{description}</p>
+                <p className="text-caption mt-2 leading-relaxed">{description}</p>
               </div>
             </StaggerItem>
           ))}

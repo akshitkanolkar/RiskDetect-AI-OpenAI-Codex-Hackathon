@@ -31,18 +31,10 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
   const homoglyph = looksLikeHomoglyph(hostname);
   const domainAgeDays = estimateDomainAgeDays(domain);
 
-  push(
-    "Normalized target",
-    `${protocol.toUpperCase()} · ${domain}`,
-    "info",
-  );
+  push("Normalized target", `${protocol.toUpperCase()} · ${domain}`, "info");
 
   if (suspiciousKeywords.length) {
-    push(
-      "Suspicious keywords",
-      `Matched: ${suspiciousKeywords.slice(0, 5).join(", ")}`,
-      "warning",
-    );
+    push("Suspicious keywords", `Matched: ${suspiciousKeywords.slice(0, 5).join(", ")}`, "warning");
   }
 
   const [listedInUrlhaus, listedInOpenPhish] = await Promise.all([
@@ -53,10 +45,7 @@ export async function scanUrl(userId: string, rawUrl: string): Promise<UrlScanRe
   if (listedInUrlhaus || listedInOpenPhish) {
     push(
       "Threat intel match",
-      [
-        listedInUrlhaus ? "URLHaus" : null,
-        listedInOpenPhish ? "OpenPhish" : null,
-      ]
+      [listedInUrlhaus ? "URLHaus" : null, listedInOpenPhish ? "OpenPhish" : null]
         .filter(Boolean)
         .join(" + "),
       "danger",

@@ -62,7 +62,11 @@ export function DataTable<T extends { id: string }>({
       const q = query.toLowerCase();
       rows = rows.filter((row) => {
         const keys = searchKeys ?? (Object.keys(row) as (keyof T)[]);
-        return keys.some((key) => String(row[key] ?? "").toLowerCase().includes(q));
+        return keys.some((key) =>
+          String(row[key] ?? "")
+            .toLowerCase()
+            .includes(q),
+        );
       });
     }
     if (sortKey) {

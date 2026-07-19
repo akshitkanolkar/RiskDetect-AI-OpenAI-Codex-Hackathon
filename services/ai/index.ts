@@ -118,10 +118,7 @@ function fallbackImageAnalysis(input: {
   };
 }
 
-function buildDefaultRecommendations(
-  level: RiskLevel,
-  privacy = false,
-): Recommendation[] {
+function buildDefaultRecommendations(level: RiskLevel, privacy = false): Recommendation[] {
   if (privacy) {
     return [
       {
@@ -239,10 +236,7 @@ export const aiService = {
           ],
         }),
       );
-      return (
-        completion.choices[0]?.message?.content?.trim() ||
-        fallbackChat(input)
-      );
+      return completion.choices[0]?.message?.content?.trim() || fallbackChat(input);
     } catch (error) {
       logError("ai", "Copilot fallback engaged", {
         error: error instanceof Error ? error.message : String(error),

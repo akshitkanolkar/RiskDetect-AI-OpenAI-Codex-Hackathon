@@ -19,7 +19,7 @@ Variants: `default` · `secondary` · `outline` · `ghost` · `destructive` · `
 ```tsx
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-<div className="glass-panel rounded-2xl p-6">…</div>
+<div className="glass-panel rounded-2xl p-6">…</div>;
 ```
 
 ## Stats & risk
@@ -40,7 +40,7 @@ import { RiskTrendChart } from "@/components/charts/risk-trend-chart";
 
 <div className="h-72">
   <RiskTrendChart data={[{ date: "Mon", score: 20 }]} />
-</div>
+</div>;
 ```
 
 Pass data as props. Colors resolve from CSS variables.
@@ -57,7 +57,7 @@ import { DataTable } from "@/components/ui/data-table";
   ]}
   data={rows}
   searchable
-/>
+/>;
 ```
 
 ## Feedback states

@@ -128,7 +128,7 @@ export function SecurityCopilot() {
                     )}
                   >
                     {message.role === "assistant" ? (
-                      <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-pre:bg-background">
+                      <div className="prose prose-sm dark:prose-invert prose-p:my-2 prose-pre:bg-background max-w-none">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -137,7 +137,7 @@ export function SecurityCopilot() {
                     {message.role === "assistant" && (
                       <button
                         type="button"
-                        className="absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-background"
+                        className="absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
                         onClick={() => void copy(message.content)}
                         aria-label="Copy message"
                       >
@@ -165,7 +165,7 @@ export function SecurityCopilot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about your scans…"
-                  className="min-h-[44px] max-h-28 resize-none"
+                  className="max-h-28 min-h-[44px] resize-none"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
